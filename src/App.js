@@ -1,24 +1,12 @@
-import logo from './logo.svg';
+//  import AppRouter from 'routers/AppRouter';
+import RouterApp from 'routers/RouterApp';
 import './App.css';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Misión TIC development
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // <AppRouter></AppRouter>
+    <RouterApp></RouterApp>
   );
 }
 
