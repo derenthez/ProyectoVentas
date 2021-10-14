@@ -16,16 +16,16 @@ const RouterApp = () => {
         <Router>
             <Switch>
                 {/* RUTAS PRIVADAS ADMIN */}
-                <Route path={['/admin/users','/admin/sales', '/admin/products']}>
+                <Route path={['/admin/usuarios','/admin/ventas', '/admin/productos']}>
                     <PrivateLayout>
                         <Switch>
-                            <Route path='/admin/users'>
+                            <Route path='/admin/usuarios'>
                                 <Users/>
                             </Route>
-                            <Route path='/admin/sales'>
+                            <Route path='/admin/ventas'>
                                 <Sales/>
                             </Route>
-                            <Route path='/admin/products'>
+                            <Route path='/admin/productos'>
                                 <Products/>
                             </Route>
                         </Switch>

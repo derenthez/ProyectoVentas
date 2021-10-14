@@ -12,11 +12,11 @@ export const DashboardRoutes = () => {
         <div className="App">
             <Layout>
                 <Switch>
-                    <Route exact path="/home" component={ Home }/>
-                    <Route exact path="/users" component={ Users }/>
-                    <Route exact path="/sales" component={ Sales }/>
-                    <Route exact path="/products" component={ Products }/>
-                    <Redirect to="/Home"/>
+                    <Route exact path="/inicio" component={ Home }/>
+                    <Route exact path="/usuarios" component={ Users }/>
+                    <Route exact path="/ventas" component={ Sales }/>
+                    <Route exact path="/productos" component={ Products }/>
+                    <Redirect to="/inicio"/>
                 </Switch>
                 <Footer/>
             </Layout>

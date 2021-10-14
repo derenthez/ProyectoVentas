@@ -24,7 +24,6 @@ export const FormProducts = () => {
         setValidated("was-validated");
     };
     return (
-        <div className="col-8 col-md-8 col-lg-8">
             <form className={`${validated} row g-3 needs-validation`} noValidate onSubmit={handleSubmit}>
                 <div className="col-md-8">
                     <label htmlFor="producto" className="form-label">Nombre del producto</label>
@@ -113,6 +112,5 @@ export const FormProducts = () => {
                     <button className="btn btn-primary" type="submit">Guardar</button>
                 </div>
             </form>
-        </div>
     )
 }

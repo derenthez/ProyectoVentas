@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const FormUsers =() => {
+export const FormUsers = () => {
 
     //VALIDACIONES FORMULARIOS
     const [validated, setValidated] = React.useState('');
@@ -15,18 +15,17 @@ export const FormUsers =() => {
     const handleSubmit = (event) => {
         const form = event.target;
         if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }else {
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
             console.log('SE GUARDO CON ÉXITO')
         }
         //setValidated(true)
         setValidated("was-validated");
-      };
+    };
     return (
-        <div className="col-8 col-md-8 col-lg-8">
             <form className={`${validated} row g-3 needs-validation`} noValidate onSubmit={handleSubmit}>
-                <div className="col-md-6">
+               <div className="col-md-6">
                     <label htmlFor="nombre" className="form-label">Nombre</label>
                     <input type="text" className="form-control" id="nombre" placeholder="nombre" required/>
                     <div className="valid-feedback">
@@ -82,8 +81,5 @@ export const FormUsers =() => {
                     <button className="btn btn-primary" type="submit">Guardar</button>
                 </div>
             </form>
-        </div>
     )
 }
-
-
