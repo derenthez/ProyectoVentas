@@ -378,14 +378,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
   };
 
   return (
-    <div className='flex flex-col items-center justify-center'>
       <form ref={form} onSubmit={submitForm} className='row g-3'>
-        <div className="row">
-          <div className="col-md-4">
-            <label htmlFor="identificador" className="form-label"></label>
-            <input name="id" id="id" type="text" className="form-control" placeholder="" required />
-          </div>
-        </div>
         <div className="col-md-8">
           <label htmlFor="producto" className="form-label">Nombre del producto</label>
           <input name='nombre' type="text" className="form-control" placeholder="Nombre del producto" required />
@@ -433,6 +426,5 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
           <button type="submit" className="btn btn-primary">Guardar</button>
         </div>
       </form>
-    </div>
   );
 };

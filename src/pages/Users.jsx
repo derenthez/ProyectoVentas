@@ -380,7 +380,6 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
   };
 
   return (
-    <div className='flex flex-col items-center justify-center'>
       <form ref={form} onSubmit={submitForm} className='row g-3'>
         <div className="col-md-6">
           <label htmlFor="usuario" className="form-label">Nombre del usuario</label>
@@ -413,6 +412,5 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
           <button type="submit" className="btn btn-primary">Guardar</button>
         </div>
       </form>
-    </div>
   );
 };
