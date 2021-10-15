@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Home } from 'pages/Home';
 import { Users } from 'pages/Users';
+import { Sellers } from 'pages/Sellers';
 import { Sales } from 'pages/Sales';
 import {Products} from 'pages/Productos'
 import { Footer } from 'components/Footer'
@@ -14,8 +15,11 @@ export const DashboardRoutes = () => {
                 <Switch>
                     <Route exact path="/inicio" component={ Home }/>
                     <Route exact path="/usuarios" component={ Users }/>
+                    <Route exact path="/vendedores" component={ Sellers }/>
                     <Route exact path="/ventas" component={ Sales }/>
                     <Route exact path="/productos" component={ Products }/>
+
+
                     <Redirect to="/inicio"/>
                 </Switch>
                 <Footer/>

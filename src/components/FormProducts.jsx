@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const FormProducts = () => {
+export const FormProducts = (datos) => {
 
     //VALIDACIONES FORMULARIOS
     const [validated, setValidated] = React.useState('');

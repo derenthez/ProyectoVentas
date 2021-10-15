@@ -24,14 +24,17 @@
 }
 
 .buttonTable {
-    background-color:#0f6dfa;
-    color: white;
+    /* background-color:#0f6dfa; */
+    /* color: white;*/ 
     border-radius: 10px;
+    margin-right:2px;
 }
 
 .buttonTableTrash{
-    background-color:#ed4d2f ;
+    /* background-color:#ed4d2f ; */
     border-radius: 10px;
+    margin-right:2px;
+    margin-bottom:2px;
 }
 
 .thTableId {

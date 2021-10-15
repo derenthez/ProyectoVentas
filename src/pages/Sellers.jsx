@@ -3,18 +3,17 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
 import { Dialog, Tooltip } from '@material-ui/core';
-import { getUsers, createUser, updateUser, deleteUser } from 'utils/api/users';
+import { getSellers, createSeller, updateSeller, deleteSeller } from 'utils/api/sellers';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
 import 'styles/modulo.css';
 
-
 //VISTA
-export const Users = () => {
+export const Sellers = () => {
 
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [usuarios, setUsuarios] = useState([])
-  const [textButton, setTextButton] = useState("Crear Usuario");
+  const [textButton, setTextButton] = useState("Crear Vendedor");
   const [iconButton, setIconButton] = useState("fa fa-user-plus")
   const [tituloModulo, setTituloModulo] = useState("MODULO DE USUARIOS")
   const [iconModulo, setIconModulo] = useState("fa fa-table")
@@ -25,7 +24,7 @@ export const Users = () => {
   useEffect(() => {
     const fetchUsuarios = async () => {
       setLoading(true);
-      await getUsers(
+      await getSellers(
         (response) => {
           console.log("Respuesta: ", response);
           setUsuarios(response.data);
@@ -53,9 +52,9 @@ export const Users = () => {
       setIconModulo("fa fa-table")
     } else {
       setEjecutarConsulta(false);
-      setTextButton("Listar Usuarios");
+      setTextButton("Listar Vendedores");
       setIconButton("fa fa-list px-2")
-      setTituloModulo("NUEVO USUARIO")
+      setTituloModulo("NUEVO VENDEDOR")
       setIconModulo("fab fa-wpforms")
     }
   }, [mostrarTabla])
@@ -153,9 +152,10 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
                 <thead className="tableStyle">
                   <tr>
                     <th className="thTableId">#</th>
-                    <th className="thTable" style={{ "width": "50%" }}>Usuario</th>
-                    <th className="thTable">Rol</th>
-                    <th className="thTable">Estado</th>
+                    <th className="thTable" style={{ "width": "50%" }}>Nombre</th>
+                    <th className="thTable">Especialidad</th>
+                    <th className="thTable">Celular</th>
+                    <th hidden className="thTable">Ingreso</th>
                     <th colspan="3" className="">Acciones</th>
                   </tr>
                 </thead>
@@ -181,14 +181,14 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
             <img
               className="card-img-top"
               src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22286%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20286%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17c80916396%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17c80916396%22%3E%3Crect%20width%3D%22286%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22107.1953125%22%20y%3D%2296.3%22%3E286x180%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-              alt={el.usuario} style={{ "height": "100px" }}
+              alt={el.nombre} style={{ "height": "100px" }}
             />
             <div className="card-body">
-              <h5 className="card-title">{el.usuario} </h5>
+              <h5 className="card-title">{el.nombre} </h5>
               <p className="card-text">
-                <span>{el.rol} </span>
+                <span>{el.especialidad} </span>
                 <br />
-                <span>{el.estado} </span>
+                <span>{el.celular} </span>
               </p>
             </div>
           </div>
@@ -205,20 +205,22 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   const [openForm, setOpenForm] = useState(false);
   const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
     _id: usuario._id,
-    usuario: usuario.usuario,
-    rol: usuario.rol,
-    estado: usuario.estado,
+    nombre: usuario.nombre,
+    especialidad: usuario.especialidad,
+    celular: usuario.celular,
+    fecha_ingreso: usuario.fecha_ingreso,
   });
 
   const actualizarUsuario = async () => {
     //enviar la info al backend
 
-    await updateUser(
+    await updateSeller(
       usuario._id,
       {
-        usuario: infoNuevoUsuario.usuario,
-        rol: infoNuevoUsuario.rol,
-        estado: infoNuevoUsuario.estado,
+        nombre: infoNuevoUsuario.nombre,
+        especialidad: infoNuevoUsuario.especialidad,
+        celular: infoNuevoUsuario.celular,
+        fecha_ingreso:infoNuevoUsuario.fecha_ingreso,
       },
       (response) => {
         console.log(response.data);
@@ -234,7 +236,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   };
 
   const eliminarUsuario = async () => {
-    await deleteUser(
+    await deleteSeller(
       usuario._id,
       (response) => {
         console.log(response.data);
@@ -259,44 +261,46 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             <input
               className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
               type='text'
-              value={infoNuevoUsuario.usuario}
-              onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, usuario: e.target.value })}
+              value={infoNuevoUsuario.nombre}
+              onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, nombre: e.target.value })}
             />
+          </td>
+          <td>
+            <select class="form-control rounded-lg m-2" name="especialidad" value={infoNuevoUsuario.especialidad}
+              onChange={(e) =>
+                setInfoNuevoUsuario({ ...infoNuevoUsuario, especialidad: e.target.value })
+              }>
+              <option value="">-- Seleccione una opción --</option>
+              <option>Sin categoría</option>
+              <option>Categoría 1</option>
+              <option>Categoría 2</option>
+              <option>Categoría 3</option>
+              <option>Categoría n</option>
+            </select>
           </td>
           <td>
             <input
               className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
               type='text'
-              value={infoNuevoUsuario.rol}
+              value={infoNuevoUsuario.celular}
               onChange={(e) =>
-                setInfoNuevoUsuario({ ...infoNuevoUsuario, rol: e.target.value })
+                setInfoNuevoUsuario({ ...infoNuevoUsuario, celular: e.target.value })
               }
-              required />
-          </td>
-          <td>
-            {/* <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
-              type='text'
-              value={infoNuevoUsuario.estado}
-              onChange={(e) =>
-                setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
-              }
-            /> */}
-            <select className="form-control  rounded-lg m-2" value={infoNuevoUsuario.estado} onChange={(e) =>
-                setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
-              }> 
+            />
+            <select hidden>
               <option value="">Seleccione opción</option>
-              <option value="Activo">Activo</option>
-              <option value="Inactivo">Inactivo</option>
+              <option value="Disponible">Disponible</option>
+              <option value="No disponible">No disponible</option>
             </select>
           </td>
         </>
       ) : (
         <>
           <td>{usuario._id.slice(20)}</td>
-          <td>{usuario.usuario}</td>
-          <td>{usuario.rol}</td>
-          <td>{usuario.estado}</td>
+          <td>{usuario.nombre}</td>
+          <td>{usuario.especialidad}</td>
+          <td>{usuario.celular}</td>
+          <td hidden>{usuario.fecha_ingreso}</td>
         </>
       )}
       <td>
@@ -360,11 +364,12 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
       nuevoUsuario[key] = value;
     });
 
-    await createUser(
+    await createSeller(
       {
-        usuario: nuevoUsuario.usuario,
-        rol: nuevoUsuario.rol,
-        estado: nuevoUsuario.estado,
+        nombre: nuevoUsuario.nombre,
+        especialidad: nuevoUsuario.especialidad,
+        celular: nuevoUsuario.celular,
+        fecha_ingreso:nuevoUsuario.fecha_ingreso,
       },
       (response) => {
         console.log(response.data);
@@ -380,20 +385,15 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
   };
 
   return (
-    <div className='flex flex-col items-center justify-center'>
       <form ref={form} onSubmit={submitForm} className='row g-3'>
-        <div className="col-md-6">
-          <label htmlFor="usuario" className="form-label">Nombre del usuario</label>
-          <input name='usuario' type="text" className="form-control" placeholder="Usuario" required />
+        <div className="col-md-7">
+          <label htmlFor="nombre" className="form-label">Nombre</label>
+          <input name='nombre' type="text" className="form-control" placeholder="Nombre" required />
         </div>
-        <div className="col-md-6">
-          <label htmlFor="clave" className="form-label">Clave de usuario</label>
-          <input name='clave' type="password" className="form-control" placeholder="Contraseña" required />
-        </div>
-        <div className="col-md-8">
-          <label htmlFor="rol" className="form-label">Rol del usuario</label>
-          <select class="form-control" name="rol"  defaultValue={0} required>
-            <option value={0}>-- Seleccione una opción --</option>
+        <div className="col-md-5">
+          <label htmlFor="especialidad" className="form-label">Especialidad</label>
+          <select class="form-control" name="especialidad" required>
+            <option value="">-- Seleccione una opción --</option>
             <option>Sin categoría</option>
             <option>Categoría 1</option>
             <option>Categoría 2</option>
@@ -401,18 +401,17 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
             <option>Categoría n</option>
           </select>
         </div>
-        <div className="col-md-4">
-          <label htmlFor="estado" className="form-label">Estado del usuario</label>
-          <select name='estado' className='form-control' defaultValue={0} required>
-            <option disabled value={0}>Seleccione una opción</option>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-          </select>
+        <div className="col-md-6">
+          <label htmlFor="celular" className="form-label">Teléfono celular</label>
+          <input name="celular" id="celular" type="text" className="form-control" required />
+        </div>
+        <div className="col-md-6">
+          <label htmlFor="fecha_ingreso" className="form-label">Teléfono celular</label>
+          <input name="fecha_ingreso" type="date" className="form-control" required />
         </div>
         <div className="col-12">
           <button type="submit" className="btn btn-primary">Guardar</button>
         </div>
       </form>
-    </div>
   );
 };
