@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { Home } from 'pages/Home';
 import { Users } from 'pages/Users';
 import { Sales } from 'pages/Sales';
-import {Products} from 'pages/Products'
+import {Products} from 'pages/Productos'
 import { Footer } from 'components/Footer'
 import {Layout} from 'layouts/Layout';
 

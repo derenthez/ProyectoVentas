@@ -1,39 +1,58 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormSales } from 'components/FormSales';
 import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { nanoid } from 'nanoid';
+import { Dialog, Tooltip } from '@material-ui/core';
+import { getSales, createSale, updateSale, deleteSale } from 'utils/api/sales';
+import ReactLoading from 'react-loading';
+import 'react-toastify/dist/ReactToastify.css';
 import 'styles/modulo.css';
 
 export const Sales = () => {
 
-    const ventas = [{id:1,Cliente:'Tomas Contreras', ClienteId: 1090452106,Valor:10500,VentaId: 2001, Cantidad: 2, PrecioUnitario:5250, Date: '25/10/2015', Vendedor: 'Andres'},
-    {id: 2,Cliente:'Tomas Contreras', ClienteId: 1090452106,Valor:10500,VentaId: 2001, Cantidad: 2, PrecioUnitario:5250, Date: 25/10/2015, Vendedor: 'Andres'},
-    {id: 3,Cliente:'Julian Contreras', ClienteId: 1090452106,Valor:10500,VentaId: 2001, Cantidad: 2, PrecioUnitario:5250, Date: 25/10/2015, Vendedor: 'Andres'},
-    {id: 4,Cliente:'Carlos Arias', ClienteId: 1090452106,Valor:10500,VentaId: 2001, Cantidad: 2, PrecioUnitario:5250, Date: 25/10/2015, Vendedor: 'Andres'},
-    {id: 5,Cliente:'Nipone Nikita', ClienteId: 1090452106,Valor:10500,VentaId: 2001, Cantidad: 2, PrecioUnitario:5250, Date: 25/10/2015, Vendedor: 'Andres'},
-    {id: 6,Cliente:'Tomas Contreras', ClienteId: 1090452106,Valor:10500,VentaId: 2001, Cantidad: 2, PrecioUnitario:5250, Date: 25/10/2015, Vendedor: 'Andres'},
-    ];
-
-
     const [mostrarTabla, setMostrarTabla] = useState(true);
+    const [sales, setSales] = useState([])
     const [textButton, setTextButton] = useState("Crear Venta");
     const [iconButton, setIconButton] = useState("fa fa-user-plus")
-    const [tituloModulo, setTituloModulo] = useState("MODULO GESTION DE VENTAS")
+    const [tituloModulo, setTituloModulo] = useState("MODULO DE VENTAS")
     const [iconModulo, setIconModulo] = useState("fa fa-table")
-    const [users, setSales] = useState([])
+    const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    //LISTADO VENTAS REGISTRADOS
+    //LISTADO VENTAS
     useEffect(() => {
-        setSales(ventas)
-    }, [])
+      const fetchVentas = async () => {
+        setLoading(true);
+        await getSales(
+          (response) => {
+            console.log("la respuesta que se recibio fue", response);
+            setSales(response.data);
+            setEjecutarConsulta(false);
+            setLoading(false);
+          },
+          (error) => {
+            console.error("Salio un error:", error);
+            setLoading(false);
+          }
+        );
+      };
+      console.log("consulta", ejecutarConsulta);
+      if (ejecutarConsulta) {
+        fetchVentas();
+      }
+    }, [ejecutarConsulta]);
 
     useEffect(() => {
         if (mostrarTabla) {
+            setEjecutarConsulta(true);
             setTextButton("Crear Venta");
             setIconButton("fa fa-user-plus px-1")
-            setTituloModulo("MODULO GESTION DE VENTAS")
+            setTituloModulo("MODULO DE VENTAS")
             setIconModulo("fa fa-table")
         } else {
-            setTextButton("Listar Sales");
+            setEjecutarConsulta(false);
+            setTextButton("Listar Ventas");
             setIconButton("fa fa-list px-2")
             setTituloModulo("NUEVA VENTA")
             setIconModulo("fab fa-wpforms")
@@ -58,7 +77,14 @@ export const Sales = () => {
                 </div>
                 <div className="card-body">
                     <div className="row">
-                        {mostrarTabla ? <TableSales listaSales={users} /> : <FormSales />}
+                        {
+                            mostrarTabla ? (
+                                <TableSales  loading={loading} listaVentas={sales}setEjecutarConsulta={setEjecutarConsulta}
+        />
+                            ) : (<FormSales />)
+                            
+                        }
+                        <ToastContainer position='bottom-center' autoClose={5000} />
                     </div>
                 </div>
             </div>
@@ -66,130 +92,259 @@ export const Sales = () => {
     )
 }
 
-const TableSales = ({ listaSales }) => {
-    // useEffect(() => {
-    //     console.log(listaSales)
-    // }, [listaSales])
+const TableSales = ({ loading, listaVentas, setEjecutarConsulta }) => {
+    const [busqueda, setBusqueda] = useState('');
+    const [ventasFiltradas, setVentasFiltradas] = useState(listaVentas);
 
-    // FILTRO BUSQUEDA EN TABLA
-    const [searchValue, setSearchValue] = React.useState("");
+    useEffect(() => {
+        setVentasFiltradas(
+          listaVentas.filter((elemento) => {
+            return JSON.stringify(elemento).toLowerCase().includes(busqueda.toLowerCase());
+          })
+        );
+      }, [busqueda, listaVentas]);
 
-    const handleChange = event => {
-        setSearchValue(event.target.value);
-    };
-
-    //  FILTRAR POR Venta
-    const filterNames = ({ Cliente }) => {
-        return Cliente.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
-    };
-
-    // MAPEO PARA AGREGAR NUMERO A CADA VENTA
-    listaSales.map((users, index) => {
-        return users.inc = index + 1;
-    });
     return (
-        <>
-            <div className="container">
-                <div className="row">
-                    <div className="col-3">
-                    </div>
-                    <div className="col-8">
-                        <div className="input-group">
-                            <input type="text" className="form-control" placeholder="Buscar" value={searchValue} onChange={handleChange} />
-                            <span className="span input-group-prepend input-group-text"> <i className="fa fa-search"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div className="table-responsive">
-                    <table data-toggle="table" className="table table-striped table-hover "
-                        data-toolbar="#toolbar"
-                        data-filter-control="true"
-                        data-filter-control-container="#filter">
-                        <thead className="tableStyle">
-                             <tr>
-                                <th className="thTableId">id</th>
-                                <th className="thTable">Cliente</th>
-                                <th className="thTable">ClienteId</th>
-                                <th className="thTable">ProductoId</th>
-                                <th className="thTable">Cantidad</th>
-                                <th className="thTable">PrecioUnitario</th>
-                                <th className="thTable">Valor</th>
-                                <th className="thTable">Date</th>
-                                <th className="thTable">Vendedor</th>
-                                <th className="thTableAcciones" colSpan="3">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listaSales.filter(filterNames).map(item => (
-                                <tr key={item.id}>
-                                    <th scope="row">{item.inc}</th>
-                                    <td>{item.Cliente}</td>
-                                    <td>{item.ClienteId}</td>
-                                    <td>{item.ProductId}</td>
-                                    <td>{item.Cantidad}</td>
-                                    <td>{item.PrecioUnitario}</td>
-                                    <td >{item.Valor}</td>
-                                    <td>{item.Date}</td>
-                                    <td>{item.Vendedor}</td>
-                                    <td>
-                                        <button type="button" className="btn buttonTable">
-                                            <i className="fa fa-eye"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button type="button" className="btn buttonTable">
-                                            <i className="fas fa-pencil-alt"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button type="button" className="btn buttonTableTrash">
-                                            <i className="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12 col-md-5">
-                        <div className="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
-                            Mostrando 1 a 10 de 57 registros
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-7">
-                        <div className="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                            <ul class="pagination">
-                                <li class="paginate_button page-item previous disabled" id="dataTable_previous">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link"> Anterior</a>
-                                </li>
-                                <li class="paginate_button page-item active">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-                                </li>
-                                <li class="paginate_button page-item">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="2" tabindex="0" class="page-link">2</a>
-                                </li>
-                                <li class="paginate_button page-item">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="3" tabindex="0" class="page-link">3</a>
-                                </li>
-                                <li class="paginate_button page-item">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="4" tabindex="0" class="page-link">4</a>
-                                </li>
-                                <li class="paginate_button page-item">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="5" tabindex="0" class="page-link">5</a>
-                                </li>
-                                <li class="paginate_button page-item">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="6" tabindex="0" class="page-link">6</a>
-                                </li>
-                                <li class="paginate_button page-item next" id="dataTable_next">
-                                    <a href="#" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Siguiente</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+      <>
+        <div className="container">
+          <div className="row">
+            <div className="col-3"></div>
+            <div className="col-8">
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Buscar"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                />
+                <span className="span input-group-prepend input-group-text">
+                  {" "}
+                  <i className="fa fa-search"></i>
+                </span>
+              </div>
             </div>
-        </>
-    )
+          </div>
+          <div className="table-responsive d-none d-sm-none d-md-block">
+            {
+              loading ? 
+              (
+                <ReactLoading
+                  type="bars"
+                  color="#0D6EFD"
+                  height={667}
+                  width={375}
+                />
+              ) 
+              : 
+              (
+                <table data-toggle="table" className="table table-striped table-hover "
+                  data-toolbar="#toolbar"
+                  data-filter-control="true"
+                  data-filter-control-container="#filter"
+                >
+                  <thead className="tableStyle">
+                    <tr>
+                      <th className="thTableId">#</th>
+                      <th className="thTable" style={{"width":"50%"}}>Producto</th>
+                      <th className="thTable">Precio</th>
+                      <th className="thTable">Cantidad</th>
+                      <th className="thTableAcciones">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ventasFiltradas.map((venta) => {
+                      return (
+                        <FilaVenta
+                          key={nanoid()}
+                          venta={venta}
+                          setEjecutarConsulta={setEjecutarConsulta}
+                        />
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )
+            }
+          </div>
+            {ventasFiltradas.map((lav) => {
+              return (
+                <div className="card d-block d-sm-block d-md-none">
+                  <img
+                    className="card-img-top"
+                    src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22286%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20286%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17c80916396%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17c80916396%22%3E%3Crect%20width%3D%22286%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22107.1953125%22%20y%3D%2296.3%22%3E286x180%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+                    alt={lav.descripcion} style={{"height" : "100px"}}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{lav.descripcion} </h5>
+                    <p className="card-text">
+                      <span>{lav.precio_unitario} </span>
+                      <br />
+                      <span>{lav.cantidad} </span>
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      </>
+    );
 }
+
+const FilaVenta = ({ venta, setEjecutarConsulta }) => {
+    const [edit, setEdit] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [infoNuevoVenta, setInfoNuevaVenta] = useState({
+      _id: venta._id,
+      descripcion: venta.descripcion,
+      precio_unitario: venta.precio_unitario,
+      cantidad: venta.cantidad,
+    });
+  
+    const actualizarVenta = async () => {
+      //enviar la info al backend
+  
+      await updateSale(
+        venta._id,
+        {
+          descripcion: infoNuevoVenta.descripcion,
+          precio_unitario: infoNuevoVenta.precio_unitario,
+          cantidad: infoNuevoVenta.cantidad,
+        },
+        (response) => {
+          console.log(response.data);
+          toast.success('Venta modificada con éxito');
+          setEdit(false);
+          setEjecutarConsulta(true);
+        },
+        (error) => {
+          toast.error('Error modificando la venta');
+          console.error(error);
+        }
+      );
+    };
+  
+    const eliminarVenta = async () => {
+      await deleteSale(
+        venta._id,
+        (response) => {
+          console.log(response.data);
+          toast.success('Venta eliminada con éxito');
+          setEjecutarConsulta(true);
+        },
+        (error) => {
+          console.error(error);
+          toast.error('Error eliminando la venta');
+        }
+      );
+  
+      setOpenDialog(false);
+    };
+  
+    return (
+      <tr>
+        {edit ? (
+          <>
+            <td>{infoNuevoVenta._id}</td>
+            <td>
+              <input
+                className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+                type='text'
+                value={infoNuevoVenta.descripcion}
+                onChange={(e) => setInfoNuevaVenta({ ...infoNuevoVenta, descripcion: e.target.value })}
+              />
+            </td>
+            <td>
+              <input
+                className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+                type='number'
+                value={infoNuevoVenta.precio_unitario}
+                onChange={(e) =>
+                  setInfoNuevaVenta({ ...infoNuevoVenta, precio_unitario: e.target.value })
+                }
+               required/>
+            </td>
+            <td>
+              <input
+                className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+                type='text'
+                value={infoNuevoVenta.cantidad}
+                onChange={(e) =>
+                  setInfoNuevaVenta({ ...infoNuevoVenta, cantidad: e.target.value })
+                }
+              />
+              <select hidden>
+                  <option value="">Seleccione opción</option>
+                  <option value="Disponible">Disponible</option>
+                  <option value="No disponible">No disponible</option>
+              </select>
+            </td>
+          </>
+        ) : (
+          <>
+            <td>{venta._id.slice(20)}</td>
+            <td>{venta.descripcion}</td>
+            <td>{venta.precio_unitario}</td>
+            <td>{venta.cantidad}</td>
+          </>
+        )}
+        <td>
+          <div className='justify-around'>
+            {edit ? (
+              <>
+                <Tooltip title='Confirmar Edición' arrow>
+                  <i
+                    onClick={() => actualizarVenta()}
+                    className='fas fa-check bg-success'
+                  />
+                </Tooltip>
+                <Tooltip title='Cancelar edición' arrow>
+                  <i
+                    onClick={() => setEdit(!edit)}
+                    className='fas fa-ban bg-warning'
+                  />
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Tooltip title='Editar Venta' arrow>
+                  <i
+                    onClick={() => setEdit(!edit)}
+                    className='fas fa-pencil-alt bg-warning'
+                  />
+                </Tooltip>
+                <Tooltip title='Eliminar Venta' arrow>
+                  <i
+                    onClick={() => setOpenDialog(true)}
+                    className='fas fa-trash bg-danger'
+                  />
+                </Tooltip>
+              </>
+            )}
+          </div>
+          <Dialog open={openDialog}>
+            <div>
+              <h1 className='text-gray font-bold'>
+                ¿Está seguro de querer eliminar la venta?
+              </h1>
+              <div className='justify-center my-4'>
+                <button
+                  onClick={() => eliminarVenta()}
+                  className='mx-2 px-4 py-2 btn btn-success text-white rounded-md shadow-md'
+                >
+                  Sí
+                </button>
+                <button
+                  onClick={() => setOpenDialog(false)}
+                  className='mx-2 px-4 py-2 btn btn-danger text-white rounded-md shadow-md'
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </Dialog>
+        </td>
+      </tr>
+    );
+  };
+  

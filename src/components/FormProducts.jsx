@@ -27,7 +27,7 @@ export const FormProducts = () => {
             <form className={`${validated} row g-3 needs-validation`} noValidate onSubmit={handleSubmit}>
                 <div className="col-md-8">
                     <label htmlFor="producto" className="form-label">Nombre del producto</label>
-                    <input type="text" className="form-control" id="producto" placeholder="Nombre del producto" required />
+                    <input type="text" className="form-control" id="producto" placeholder="Nombre del producto" required/>
                     <div className="valid-feedback">
                         Correcto!
                     </div>
@@ -94,16 +94,6 @@ export const FormProducts = () => {
                         Seleccione una opción de la lista.
                     </div>
                 </div>
-                {/* <div className="col-md-4"> */}
-                {/* <label htmlFor="validationCustom05" className="form-label">Estado</label> */}
-                {/* <input type="text" className="form-control" id="estado" required /> */}
-                {/* <div className="valid-feedback"> */}
-                {/* Correcto! */}
-                {/* </div> */}
-                {/* <div className="invalid-feedback"> */}
-                {/* Introduzca un Estado para el Producto. */}
-                {/* </div> */}
-                {/* </div> */}
                 <div className="col-12">
                     <label htmlFor="nota" className="form-label">Información adicional del producto</label>
                     <textarea class="form-control" rows="5" id="nota" name="nota"></textarea>
