@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
-import { Dialog, Tooltip } from '@material-ui/core';
+import { Dialog} from '@material-ui/core';
 import { getProducts, createProduct, updateProduct, deleteProduct } from 'utils/api/products';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
@@ -202,7 +202,6 @@ const TablaProductos = ({ loading, listaProductos, setEjecutarConsulta }) => {
 const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openForm, setOpenForm] = useState(false);
   const [infoNuevoProducto, setInfoNuevoProducto] = useState({
     _id: producto._id,
     nombre: producto.nombre,
@@ -256,16 +255,16 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
         <>
           <td>{infoNuevoProducto._id}</td>
           <td>
-            <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+            <input style={{ textTransform: 'uppercase'}}
+              className='p-2 rounded-lg m-2'
               type='text'
               value={infoNuevoProducto.nombre}
               onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, nombre: e.target.value })}
             />
           </td>
           <td>
-            <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+            <input 
+              className='p-2 rounded-lg m-2'
               type='number'
               value={infoNuevoProducto.precio}
               onChange={(e) =>
@@ -274,15 +273,10 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
               required />
           </td>
           <td>
-            <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
-              type='text'
-              value={infoNuevoProducto.estado}
+            <select className='form-control rounded-lg m-2' value={infoNuevoProducto.estado}
               onChange={(e) =>
                 setInfoNuevoProducto({ ...infoNuevoProducto, estado: e.target.value })
-              }
-            />
-            <select hidden>
+              }>
               <option value="">Seleccione opción</option>
               <option value="Disponible">Disponible</option>
               <option value="No disponible">No disponible</option>
@@ -361,6 +355,8 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
     await createProduct(
       {
         nombre: nuevoProducto.nombre,
+        categoria: nuevoProducto.categoria,
+        unidad_medida: nuevoProducto.unidad_medida,
         precio: nuevoProducto.precio,
         estado: nuevoProducto.estado,
       },
@@ -380,28 +376,28 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
   return (
       <form ref={form} onSubmit={submitForm} className='row g-3'>
         <div className="col-md-8">
-          <label htmlFor="producto" className="form-label">Nombre del producto</label>
-          <input name='nombre' type="text" className="form-control" placeholder="Nombre del producto" required />
+          <label htmlFor="nombre" className="form-label">Nombre del producto</label>
+          <input name='nombre' type="text" style={{ textTransform: 'uppercase'}} className="form-control" placeholder="Nombre del producto" required />
         </div>
         <div className="col-md-4">
           <label htmlFor="categoria" className="form-label">Categoría</label>
           <select class="form-control" name="categoria" required>
             <option value="">-- Seleccione una opción --</option>
-            <option value="1">Sin categoría</option>
-            <option value="2">Categoría 1</option>
-            <option value="3">Categoría 2</option>
-            <option value="4">Categoría 3</option>
-            <option value="5">Categoría n</option>
+            <option>Sin categoría</option>
+            <option>Categoría 1</option>
+            <option>Categoría 2</option>
+            <option>Categoría 3</option>
+            <option>Categoría n</option>
           </select>
         </div>
         <div className="col-md-5">
-          <label htmlFor="unidadMedida" className="form-label">Unidad de Medida</label>
+          <label htmlFor="unidad_medida" className="form-label">Unidad de Medida</label>
           <div className="input-group has-validation">
-            <select class="form-control" name="unidadMedida" required>
+            <select name="unidad_medida" class="form-control" required>
               <option value="">-- Seleccione una opción --</option>
-              <option value="1">Unidad</option>
-              <option value="2">Paquete</option>
-              <option value="3">Unidad n</option>
+              <option>Unidad</option>
+              <option>Paquete</option>
+              <option>Unidad n</option>
             </select>
           </div>
         </div>
@@ -418,10 +414,10 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
             <option value="No disponible">No disponible</option>
           </select>
         </div>
-        <div className="col-12">
+        {/* <div className="col-12">
           <label htmlFor="nota" className="form-label">Información adicional del producto</label>
           <textarea name="nota" class="form-control" rows="5"></textarea>
-        </div>
+        </div> */}
         <div className="col-12">
           <button type="submit" className="btn btn-primary">Guardar</button>
         </div>

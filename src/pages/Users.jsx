@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
-import { Dialog, Tooltip } from '@material-ui/core';
+import { Dialog} from '@material-ui/core';
 import { getUsers, createUser, updateUser, deleteUser } from 'utils/api/users';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
@@ -202,7 +202,6 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
 const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openForm, setOpenForm] = useState(false);
   const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
     _id: usuario._id,
     usuario: usuario.usuario,
@@ -264,24 +263,27 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             />
           </td>
           <td>
-            <input
+            {/* <input
               className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
               type='text'
               value={infoNuevoUsuario.rol}
               onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, rol: e.target.value })
               }
-              required />
+              required /> */}
+            <select class="form-control p-2 rounded-lg m-2" name="rol" value={infoNuevoUsuario.rol}
+              onChange={(e) =>
+                setInfoNuevoUsuario({ ...infoNuevoUsuario, rol: e.target.value })
+              } required>
+              <option value={0}>-- Seleccione una opción --</option>
+              <option>Sin categoría</option>
+              <option>Categoría 1</option>
+              <option>Categoría 2</option>
+              <option>Categoría 3</option>
+              <option>Categoría n</option>
+            </select>
           </td>
           <td>
-            {/* <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
-              type='text'
-              value={infoNuevoUsuario.estado}
-              onChange={(e) =>
-                setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
-              }
-            /> */}
             <select className="form-control  rounded-lg m-2" value={infoNuevoUsuario.estado} onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
               }> 
