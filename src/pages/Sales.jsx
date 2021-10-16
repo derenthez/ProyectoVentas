@@ -2,12 +2,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
-import { Dialog, Tooltip } from '@material-ui/core';
+import { Dialog} from '@material-ui/core';
 import { getSales, createSale, updateSale, deleteSale } from 'utils/api/sales';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
 import 'styles/modulo.css';
-
 
 //VISTA
 export const Sales = () => {
@@ -202,7 +201,6 @@ const TablaVentas = ({ loading, listaVentas, setEjecutarConsulta }) => {
 const FilaVenta = ({ venta, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openForm, setOpenForm] = useState(false);
   const [infoNuevoVenta, setInfoNuevoVenta] = useState({
     _id: venta._id,
     descripcion: venta.descripcion,
@@ -258,7 +256,7 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
           <td>
             <input
               className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
-              type='text'
+              type='text' style={{ textTransform: 'uppercase'}}
               value={infoNuevoVenta.descripcion}
               onChange={(e) => setInfoNuevoVenta({ ...infoNuevoVenta, descripcion: e.target.value })}
             />
@@ -347,6 +345,12 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
 
 //FORMULARIO
 const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) => {
+  const curr = new Date();
+  curr.setDate(curr.getDate()-1);
+  const fechaVenta = curr.toISOString().substr(0,10);
+  curr.setDate(curr.getDate() + 30);
+  const fechaVentaVencimiento = curr.toISOString().substr(0,10);
+
   const form = useRef(null);
 
   const submitForm = async (e) => {
@@ -360,9 +364,15 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
 
     await createSale(
       {
+        fecha_venta: nuevoVenta.fecha_venta,
+        fecha_vencimiento: nuevoVenta.fecha_vencimiento,
+        vendedor: nuevoVenta.vendedor,
+        documento_cliente: nuevoVenta.documento_cliente,
+        nombre_cliente: nuevoVenta.nombre_cliente,
         descripcion: nuevoVenta.descripcion,
         precio_unitario: nuevoVenta.precio_unitario,
         cantidad: nuevoVenta.cantidad,
+        observaciones: nuevoVenta.observaciones
       },
       (response) => {
         console.log(response.data);
@@ -379,9 +389,29 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
 
   return (
     <form ref={form} onSubmit={submitForm} className='row g-3'>
+      <div className="col-md-2">
+        <label htmlFor="fecha_venta" className="form-label">Fecha venta</label>
+        <input name="fecha_venta" type="date" className="form-control" placeholder="Fecha de venta" min={fechaVenta} max={fechaVenta} defaultValue={fechaVenta} required />
+      </div>
+      <div className="col-md-2">
+        <label htmlFor="fecha_vencimiento" className="form-label">Fecha vencimiento</label>
+        <input name="fecha_vencimiento" type="date" className="form-control" placeholder="" min={fechaVenta} defaultValue={fechaVentaVencimiento} required />
+      </div>
+      <div className="col-md-8">
+        <label htmlFor="vendedor" className="form-label">Vendedor</label>
+        <input name="vendedor" type="text" style={{ textTransform: 'uppercase'}} className="form-control" required />
+      </div>
+      <div className="col-md-4">
+        <label htmlFor="documento_cliente" className="form-label">NIT</label>
+        <input name="documento_cliente" type="text" style={{ textTransform: 'uppercase'}} className="form-control" placeholder="Número de identificación" required />
+      </div>
+      <div className="col-md-8">
+        <label htmlFor="nombre_cliente" className="form-label">Cliente</label>
+        <input name="nombre_cliente" type="text" style={{ textTransform: 'uppercase'}} className="form-control" placeholder="Nombre cliente" required />
+      </div>
       <div className="col-md-7">
         <label htmlFor="descripcion" className="form-label">Nombre del producto</label>
-        <input name="descripcion" type="text" className="form-control" placeholder="Nombre del producto" required />
+        <input name="descripcion" type="text" style={{ textTransform: 'uppercase'}} className="form-control" placeholder="Nombre del producto" required />
       </div>
       <div className="col-md-2">
         <label htmlFor="precio" className="form-label">Precio unitario</label>
@@ -392,10 +422,14 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
         <input name="cantidad" type="number" className="form-control" min={0} required />
       </div>
       <div className="col-md-1">
+        <label htmlFor="addVenta" className="form-label"><span>&nbsp; </span></label>
+        <button name="addVenta" type="button" className="form-control btn btn-primary btn-block">
+           <i className="fas fa-plus-circle"></i>
+        </button>
       </div>
       <div className="col-12">
-        <label htmlFor="nota" className="form-label">Información adicional del producto</label>
-        <textarea name="nota" class="form-control" rows="5"></textarea>
+        <label htmlFor="observaciones" className="form-label">Observaciones</label>
+        <textarea name="observaciones" class="form-control" rows="5"></textarea>
       </div>
       <div className="col-12">
         <button type="submit" className="btn btn-primary">Guardar</button>

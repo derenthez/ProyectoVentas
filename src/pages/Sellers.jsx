@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
-import { Dialog, Tooltip } from '@material-ui/core';
+import { Dialog } from '@material-ui/core';
 import { getSellers, createSeller, updateSeller, deleteSeller } from 'utils/api/sellers';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
@@ -202,7 +202,6 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
 const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openForm, setOpenForm] = useState(false);
   const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
     _id: usuario._id,
     nombre: usuario.nombre,
@@ -260,7 +259,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
           <td>
             <input
               className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
-              type='text'
+              type='text' style={{ textTransform: 'uppercase'}}
               value={infoNuevoUsuario.nombre}
               onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, nombre: e.target.value })}
             />
@@ -388,7 +387,7 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
       <form ref={form} onSubmit={submitForm} className='row g-3'>
         <div className="col-md-7">
           <label htmlFor="nombre" className="form-label">Nombre</label>
-          <input name='nombre' type="text" className="form-control" placeholder="Nombre" required />
+          <input name='nombre' type="text" style={{ textTransform: 'uppercase'}} className="form-control" placeholder="Nombre" required />
         </div>
         <div className="col-md-5">
           <label htmlFor="especialidad" className="form-label">Especialidad</label>
