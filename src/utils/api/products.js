@@ -6,6 +6,12 @@ export const getProducts = async (successCallback, errorCallback) => {
     await axios.request(options).then(successCallback).catch(errorCallback);
   };
 
+//EXTRAER DATO POR ID
+export const getProductByID = async (id, successCallback, errorCallback) => {
+  const options = { method: 'GET', url: `http://localhost:5000/productos/${id}` };
+  await axios.request(options).then(successCallback).catch(errorCallback);
+};
+
 //CREAR UN NUEVO PRODUCTO
 export const createProduct = async (data, successCallback, errorCallback) => {
     const options = {
