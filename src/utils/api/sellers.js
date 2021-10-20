@@ -1,16 +1,20 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config({ path: '../../../.env' });
+
+const backend = process.env.BACK_URL || "http://localhost:5000";
 
 //TRAER TODOS LOS USUARIOS
 export const getSellers = async (successCallback, errorCallback) => {
-    const options = { method: 'GET', url: 'http://localhost:5000/funcionarios' };
+    const options = { method: 'GET', url: `${backend}/funcionarios/` };
     await axios.request(options).then(successCallback).catch(errorCallback);
   };
-
+ 
 //CREAR UN NUEVO USUARIO
 export const createSeller = async (data, successCallback, errorCallback) => {
     const options = {
       method: 'POST',
-      url: 'http://localhost:5000/funcionarios/',
+      url: `${backend}/funcionarios/`,
       headers: { 'Content-Type': 'application/json' },
       data,
     };
@@ -21,7 +25,7 @@ export const createSeller = async (data, successCallback, errorCallback) => {
 export const updateSeller = async (id, data, successCallback, errorCallback) => {
     const options = {
       method: 'PATCH',
-      url: `http://localhost:5000/funcionarios/${id}/`,
+      url: `${backend}/funcionarios/${id}/`,
       headers: { 'Content-Type': 'application/json' },
       data,
     };
@@ -32,7 +36,7 @@ export const updateSeller = async (id, data, successCallback, errorCallback) => 
 export const deleteSeller = async (id, successCallback, errorCallback) => {
     const options = {
       method: 'DELETE',
-      url: `http://localhost:5000/funcionarios/${id}/`,
+      url: `${backend}/funcionarios/${id}/`,
       headers: { 'Content-Type': 'application/json' },
     };
     await axios.request(options).then(successCallback).catch(errorCallback);

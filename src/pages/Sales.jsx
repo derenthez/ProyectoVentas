@@ -91,40 +91,11 @@ export const Sales = () => {
     }
   }, [mostrarTabla])
 
-  // //DATOS PARA FORMULARIO  
-  // useEffect(() => {
-  //   const fetchVendores = async () => {
-  //     await getSellers(
-  //       (response) => {
-  //         console.log("vendedores " +JSON.stringify(response.data));
-  //         setVendedores(response.data);
-  //       },
-  //       (error) => {
-  //         console.error(error);
-  //       }
-  //     );
-  //   };
-  //   const fetchProductos = async () => {
-  //     await getProducts(
-  //       (response) => {
-  //         console.log("Productos " +JSON.stringify(response.data));
-  //         setProductos(response.data);
-  //       },
-  //       (error) => {
-  //         console.error(error);
-  //       }
-  //     );
-  //   };
-
-  //   fetchVendores();
-  //   fetchProductos();
-  // }, []);
-
-  return (
+   return (
     <div className="containerModulo">
-      <div class="card shadow">
-        <div class="card-header">
-          <h3 class="m-0 font-weight-bold">
+      <div className="card shadow">
+        <div className="card-header">
+          <h3 className="m-0 font-weight-bold">
             <i className={iconModulo}></i> <span className="title py-3">{tituloModulo}</span>
           </h3>
           <div>
@@ -218,7 +189,7 @@ const TablaVentas = ({ loading, listaVentas, setEjecutarConsultaVentas }) => {
                     <th className="thTable" style={{ "width": "50%" }}>Cliente</th>
                     <th className="thTable">Total venta</th>
                     <th className="thTable">Estado</th>
-                    <th colspan="3" className="">Acciones</th>
+                    <th className="" style={{width:"380px"}}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -265,6 +236,7 @@ const TablaVentas = ({ loading, listaVentas, setEjecutarConsultaVentas }) => {
 const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [totalVenta, SetTotalVenta]=useState(0); 
   const [infoNuevoVenta, setInfoNuevoVenta] = useState({
     _id: venta._id,
     tipo_documento: venta.cliente.tipo_documento,
@@ -274,7 +246,7 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
     estado: venta.estado,
   });
 
-  const actualizarVenta = async () => {
+   const actualizarVenta = async () => {
     //enviar la info al backend
 
     await updateSale(
@@ -282,8 +254,8 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
       {
         cliente: {
           "tipo_documento": infoNuevoVenta.tipo_documento,
-          "documento": infoNuevoVenta.documento,
-          "nombre": infoNuevoVenta.cliente
+          "documento": infoNuevoVenta.documento.toUpperCase(),
+          "nombre": infoNuevoVenta.cliente.toUpperCase()
         },
         estado: infoNuevoVenta.estado,
       },
@@ -353,9 +325,7 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
               onChange={(e) => setInfoNuevoVenta({ ...infoNuevoVenta, cliente: e.target.value })}
             />
           </td>
-          <td>
-            {infoNuevoVenta.total_venta}
-          </td>
+          <td>{infoNuevoVenta.total_venta}</td>
           <td>
             <select className="form-control rounded-lg" defaultValue=""
               value={infoNuevoVenta.estado}
@@ -363,9 +333,12 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
                 setInfoNuevoVenta({ ...infoNuevoVenta, estado: e.target.value })
               }>
               <option disabled value="">Seleccione opción</option>
-              <option value="En preparación">En preparación</option>
-              <option value="En despacho">En despacho</option>
-              <option value="Entregada">Entregada</option>
+              <option value="Creación">Creación</option>
+              <option value="Embalaje">Embalaje</option>
+              <option value="Despacho">Despacho</option>
+              <option value="Ruta">Ruta</option>
+              <option value="Ubicación">Ubicación</option>
+              <option value="Recepción">Recepción</option>
             </select>
           </td>
         </>
@@ -378,9 +351,10 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
         </>
       )}
       <td>
-        <div className='justify-around'>
-          {edit ? (
+        <div style={{width:"150px",textAlign:"center"}}>
+          { edit ? (
             <>
+
               <button type="button" className="btn btn-success buttonTable" title="Confirmar Edición" onClick={() => actualizarVenta()}>
                 <i className="fas fa-check "></i>
               </button>
@@ -388,12 +362,15 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
                 <i className="fas fa-ban"></i>
               </button>
             </>
-          ) : (
+          ):(
             <>
-              <button type="button" onClick={() => setOpenDialog(true)} className="btn btn-danger buttonTableTrash">
+              <button type="button" className="btn btn-success buttonTable">
+                <i className="fa fa-eye"></i>
+              </button>
+              <button type="button" onClick={() => infoNuevoVenta.estado!="Recepción" ? (setOpenDialog(true)):(toast.error("La venta no se puede eliminar"))} className="btn btn-danger buttonTableTrash">
                 <i className="fas fa-trash-alt"></i>
               </button>
-              <button type="button" className="btn btn-primary buttonTable" title='Editar Venta' onClick={() => setEdit(!edit)}>
+              <button type="button" className="btn btn-primary buttonTable" title='Editar Venta' onClick={() => infoNuevoVenta.estado!="Recepción" ? (setEdit(!edit)):(toast.error("La venta no se puede modificar"))}>
                 <i className="fas fa-pencil-alt"></i>
               </button>
             </>
@@ -462,7 +439,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
     
     //console.log(productos.filter((pro) => pro._id === datosFormulario.producto_0)[0]);
 
-    //la del profe no funciona
+    //la del profe no me funciona
       // const listaProductos = Object.keys(datosFormulario).map((k) => {
       //   if (k.includes('producto_')) {
       //     return productosTabla.filter((v) => v._id ===datosFormulario[k])[0];
@@ -477,12 +454,12 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
         vendedor: vendedores.filter((ventor) => ventor._id === datosFormulario.vendedor)[0],
         cliente: {
           "tipo_documento": datosFormulario.tipo_documento_cliente,
-          "documento": datosFormulario.documento_cliente,
-          "nombre": datosFormulario.nombre_cliente,
+          "documento": datosFormulario.documento_cliente.toUpperCase(),
+          "nombre": datosFormulario.nombre_cliente.toUpperCase(),
         },
         detalles_venta: listaProductos,
         total_venta: datosFormulario.valor,
-        estado:"",
+        estado:"Creación",
       },
       (response) => {
         console.log(response.data);
@@ -539,23 +516,26 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
           setProductos={setProductos}
           setProductosTabla={setProductosTabla}
         />
-
-        <label className='flex flex-col'>
-          <span className='text-2xl font-gray-900'>Valor Total Venta</span>
+        <div className="col-md-3">
+          <label htmlFor="valor" className='form-label'>Valor Total Venta</label>
           <input
-            className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+            className='form-control'
             type='number'
             name='valor'
             defaultValue={0}
+            min={1}
             required
           />
-        </label>
+        </div>
+        <div className="col-md-2">
+        <label htmlFor="submit" className='form-label'> &nbsp; </label>
         <button
           type='submit'
-          className='col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-600 text-white'
+          className='form-control btn btn-primary'
         >
           Crear Venta
         </button>
+        </div>
       </form>
     </div>
   );
@@ -599,10 +579,10 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
 
   return (
     <div>
-      <div class="bg-secondary text-white">
+      <div className="bg-secondary text-white">
         <div className="flex-row text-center">DETALLES DE LA VENTA</div>
         <div className="d-flex">
-          <div class="p-2 flex-fill">
+          <div className="p-2 flex-fill">
             <label hidden className="form-label hidden" htmlFor="producto">Producto</label>
             <select
               className="form-control"
@@ -622,7 +602,7 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
               })}
             </select>
           </div>
-          <div class="p-2 col-md-1">
+          <div className="p-2 col-md-1">
             <label hidden htmlFor="addVenta" className="form-label hidden"><span>&nbsp;</span></label>
             <button name="addVenta" type="button"
               onClick={() => agregarNuevoProducto()}
