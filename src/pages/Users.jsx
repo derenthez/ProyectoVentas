@@ -62,9 +62,9 @@ export const Users = () => {
 
   return (
     <div className="containerModulo">
-      <div class="card shadow">
-        <div class="card-header">
-          <h3 class="m-0 font-weight-bold">
+      <div className="card shadow">
+        <div className="card-header">
+          <h3 className="m-0 font-weight-bold">
             <i className={iconModulo}></i> <span className="title py-3">{tituloModulo}</span>
           </h3>
           <div>
@@ -156,7 +156,7 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
                     <th className="thTable" style={{ "width": "50%" }}>Usuario</th>
                     <th className="thTable">Rol</th>
                     <th className="thTable">Estado</th>
-                    <th colspan="3" className="">Acciones</th>
+                    <th colSpan="3" className="">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -215,7 +215,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     await updateUser(
       usuario._id,
       {
-        usuario: infoNuevoUsuario.usuario,
+        usuario: infoNuevoUsuario.usuario.toLowerCase(),
         rol: infoNuevoUsuario.rol,
         estado: infoNuevoUsuario.estado,
       },
@@ -253,10 +253,10 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     <tr>
       {edit ? (
         <>
-          <td>{infoNuevoUsuario._id}</td>
+          <td>{infoNuevoUsuario._id.slice(20)}</td>
           <td>
             <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+              className='form-control rounded-lg'
               type='text'
               value={infoNuevoUsuario.usuario}
               onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, usuario: e.target.value })}
@@ -264,32 +264,34 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
           </td>
           <td>
             {/* <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+              className='form-control rounded-lg'
               type='text'
               value={infoNuevoUsuario.rol}
               onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, rol: e.target.value })
               }
               required /> */}
-            <select class="form-control p-2 rounded-lg m-2" name="rol" value={infoNuevoUsuario.rol}
+            <select className="form-control rounded-lg" name="rol" value={infoNuevoUsuario.rol}
               onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, rol: e.target.value })
               } required>
-              <option value={0}>-- Seleccione una opción --</option>
-              <option>Sin categoría</option>
-              <option>Categoría 1</option>
-              <option>Categoría 2</option>
-              <option>Categoría 3</option>
-              <option>Categoría n</option>
+              <option disabled value={0}>-- Seleccione una opción --</option>
+              <option value="Sin rol">Sin rol</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Ejecutivo">Ejecutivo</option>
+              <option value="Operario">Operario</option>
+              <option value="Director">Director</option>
+              <option value="Gerente comercial">Gerente comercial</option>
             </select>
           </td>
           <td>
-            <select className="form-control  rounded-lg m-2" value={infoNuevoUsuario.estado} onChange={(e) =>
+            <select className="form-control rounded-lg" value={infoNuevoUsuario.estado} onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
               }> 
-              <option value="">Seleccione opción</option>
-              <option value="Activo">Activo</option>
-              <option value="Inactivo">Inactivo</option>
+              <option disabled value="">Seleccione opción</option>
+              <option value="Autorizado">Autorizado</option>
+              <option value="Bloqueado">Bloqueado</option>
             </select>
           </td>
         </>
@@ -364,7 +366,7 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
 
     await createUser(
       {
-        usuario: nuevoUsuario.usuario,
+        usuario: nuevoUsuario.usuario.toLowerCase(),
         rol: nuevoUsuario.rol,
         estado: nuevoUsuario.estado,
       },
@@ -382,37 +384,39 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
   };
 
   return (
-      <form ref={form} onSubmit={submitForm} className='row g-3'>
-        <div className="col-md-6">
-          <label htmlFor="usuario" className="form-label">Nombre del usuario</label>
-          <input name='usuario' type="text" className="form-control" placeholder="Usuario" required />
-        </div>
-        <div className="col-md-6">
-          <label htmlFor="clave" className="form-label">Clave de usuario</label>
-          <input name='clave' type="password" className="form-control" placeholder="Contraseña" required />
-        </div>
-        <div className="col-md-8">
-          <label htmlFor="rol" className="form-label">Rol del usuario</label>
-          <select class="form-control" name="rol"  defaultValue={0} required>
-            <option value={0}>-- Seleccione una opción --</option>
-            <option>Sin categoría</option>
-            <option>Categoría 1</option>
-            <option>Categoría 2</option>
-            <option>Categoría 3</option>
-            <option>Categoría n</option>
-          </select>
-        </div>
-        <div className="col-md-4">
-          <label htmlFor="estado" className="form-label">Estado del usuario</label>
-          <select name='estado' className='form-control' defaultValue={0} required>
-            <option disabled value={0}>Seleccione una opción</option>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-          </select>
-        </div>
-        <div className="col-12">
-          <button type="submit" className="btn btn-primary">Guardar</button>
-        </div>
-      </form>
+    <form ref={form} onSubmit={submitForm} className='row g-3'>
+      <div className="col-md-6">
+        <label htmlFor="usuario" className="form-label">Nombre del usuario</label>
+        <input name='usuario' type="text" className="form-control" placeholder="Usuario" required />
+      </div>
+      <div className="col-md-6">
+        <label htmlFor="clave" className="form-label">Clave de usuario</label>
+        <input name='clave' type="password" className="form-control" placeholder="Contraseña" required />
+      </div>
+      <div className="col-md-8">
+        <label htmlFor="rol" className="form-label">Rol del usuario</label>
+        <select className="form-control" name="rol" defaultValue={0} required>
+          <option disabled className="disabled" value={0}>-- Seleccione una opción --</option>
+          <option value="Sin rol">Sin rol</option>
+          <option value="Vendedor">Vendedor</option>
+          <option value="Administrador">Administrador</option>
+          <option value="Ejecutivo">Ejecutivo</option>
+          <option value="Operario">Operario</option>
+          <option value="Director">Director</option>
+          <option value="Gerente comercial">Gerente comercial</option>
+        </select>
+      </div>
+      <div className="col-md-4">
+        <label htmlFor="estado" className="form-label">Estado del usuario</label>
+        <select name='estado' className='form-control' defaultValue={0} required>
+          <option disabled value={0}>Seleccione una opción</option>
+          <option value="Autorizado">Autorizado</option>
+          <option value="Bloqueado">Bloqueado</option>
+        </select>
+      </div>
+      <div className="col-12">
+        <button type="submit" className="btn btn-primary">Guardar</button>
+      </div>
+    </form>
   );
 };

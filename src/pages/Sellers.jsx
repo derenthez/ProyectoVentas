@@ -15,7 +15,7 @@ export const Sellers = () => {
   const [usuarios, setUsuarios] = useState([])
   const [textButton, setTextButton] = useState("Crear Vendedor");
   const [iconButton, setIconButton] = useState("fa fa-user-plus")
-  const [tituloModulo, setTituloModulo] = useState("MODULO DE USUARIOS")
+  const [tituloModulo, setTituloModulo] = useState("GESTION DE VENDEDORES")
   const [iconModulo, setIconModulo] = useState("fa fa-table")
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -46,9 +46,9 @@ export const Sellers = () => {
   useEffect(() => {
     if (mostrarTabla) {
       setEjecutarConsulta(true);
-      setTextButton("Crear Usuario");
+      setTextButton("Crear Vendedor");
       setIconButton("fa fa-user-plus px-1")
-      setTituloModulo("MODULO DE USUARIOS")
+      setTituloModulo("GESTION DE VENDEDORES")
       setIconModulo("fa fa-table")
     } else {
       setEjecutarConsulta(false);
@@ -61,9 +61,9 @@ export const Sellers = () => {
 
   return (
     <div className="containerModulo">
-      <div class="card shadow">
-        <div class="card-header">
-          <h3 class="m-0 font-weight-bold">
+      <div className="card shadow">
+        <div className="card-header">
+          <h3 className="m-0 font-weight-bold">
             <i className={iconModulo}></i> <span className="title py-3">{tituloModulo}</span>
           </h3>
           <div>
@@ -156,7 +156,7 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
                     <th className="thTable">Especialidad</th>
                     <th className="thTable">Celular</th>
                     <th hidden className="thTable">Ingreso</th>
-                    <th colspan="3" className="">Acciones</th>
+                    <th colSpan="3" className="">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -216,7 +216,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     await updateSeller(
       usuario._id,
       {
-        nombre: infoNuevoUsuario.nombre,
+        nombre: infoNuevoUsuario.nombre.toUpperCase(),
         especialidad: infoNuevoUsuario.especialidad,
         celular: infoNuevoUsuario.celular,
         fecha_ingreso:infoNuevoUsuario.fecha_ingreso,
@@ -255,31 +255,38 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     <tr>
       {edit ? (
         <>
-          <td>{infoNuevoUsuario._id}</td>
+          <td>{infoNuevoUsuario._id.slice(20)}</td>
           <td>
             <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+              className='form-control rounded-lg'
               type='text' style={{ textTransform: 'uppercase'}}
               value={infoNuevoUsuario.nombre}
               onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, nombre: e.target.value })}
             />
           </td>
           <td>
-            <select class="form-control rounded-lg m-2" name="especialidad" value={infoNuevoUsuario.especialidad}
+            <input
+              type="text" className="form-control rounded-lg" name="especialidad" value={infoNuevoUsuario.especialidad}
               onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, especialidad: e.target.value })
-              }>
-              <option value="">-- Seleccione una opción --</option>
-              <option>Sin categoría</option>
-              <option>Categoría 1</option>
-              <option>Categoría 2</option>
-              <option>Categoría 3</option>
-              <option>Categoría n</option>
-            </select>
+              } required />
+            {/* <select className="form-control rounded-lg" name="especialidad" value={infoNuevoUsuario.especialidad}
+              onChange={(e) =>
+                setInfoNuevoUsuario({ ...infoNuevoUsuario, especialidad: e.target.value })
+              } required>
+              <option disabled value={0}>-- Seleccione una opción --</option>
+              <option value="Sin rol">Sin rol</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Ejecutivo">Ejecutivo</option>
+              <option value="Operario">Operario</option>
+              <option value="Director">Director</option>
+              <option value="Gerente comercial">Gerente comercial</option>
+            </select> */}
           </td>
           <td>
             <input
-              className='bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
+              className='form-control rounded-lg'
               type='text'
               value={infoNuevoUsuario.celular}
               onChange={(e) =>
@@ -303,7 +310,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         </>
       )}
       <td>
-        <div className='justify-around'>
+        <div className='text-center'>
           {edit ? (
             <>
               <button type="button" className="btn btn-success buttonTable" title="Confirmar Edición"  onClick={() => actualizarUsuario()}>
@@ -365,7 +372,7 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
 
     await createSeller(
       {
-        nombre: nuevoUsuario.nombre,
+        nombre: nuevoUsuario.nombre.toUpperCase(),
         especialidad: nuevoUsuario.especialidad,
         celular: nuevoUsuario.celular,
         fecha_ingreso:nuevoUsuario.fecha_ingreso,
@@ -391,21 +398,25 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
         </div>
         <div className="col-md-5">
           <label htmlFor="especialidad" className="form-label">Especialidad</label>
-          <select class="form-control" name="especialidad" required>
-            <option value="">-- Seleccione una opción --</option>
-            <option>Sin categoría</option>
-            <option>Categoría 1</option>
-            <option>Categoría 2</option>
-            <option>Categoría 3</option>
-            <option>Categoría n</option>
-          </select>
+          <input
+              type="text" className="form-control" name="especialidad" placeholder="Especialidad" required />
+            {/* <select className="form-control" name="especialidad" required>
+              <option disabled value={0}>-- Seleccione una opción --</option>
+              <option value="Sin rol">Sin rol</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Ejecutivo">Ejecutivo</option>
+              <option value="Operario">Operario</option>
+              <option value="Director">Director</option>
+              <option value="Gerente comercial">Gerente comercial</option>
+            </select> */}
         </div>
         <div className="col-md-6">
           <label htmlFor="celular" className="form-label">Teléfono celular</label>
-          <input name="celular" id="celular" type="text" className="form-control" required />
+          <input name="celular" id="celular" type="text" className="form-control" placeholder="# celular" required />
         </div>
         <div className="col-md-6">
-          <label htmlFor="fecha_ingreso" className="form-label">Teléfono celular</label>
+          <label htmlFor="fecha_ingreso" className="form-label">Fecha ingreso</label>
           <input name="fecha_ingreso" type="date" className="form-control" required />
         </div>
         <div className="col-12">
