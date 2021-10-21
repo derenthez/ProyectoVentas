@@ -408,7 +408,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
         </div>
         <div className="col-md-4">
           <label htmlFor="estado" className="form-label">Estado del producto</label>
-          <select name='estado' className='form-control' required defaultValue={0} required>
+          <select name='estado' className='form-control' defaultValue={0} required>
             <option disabled value={0}>Seleccione una opción</option>
             <option value="Disponible">Disponible</option>
             <option value="No disponible">No disponible</option>
