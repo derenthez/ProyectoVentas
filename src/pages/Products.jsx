@@ -62,9 +62,9 @@ export const Products = () => {
 
   return (
     <div className="containerModulo">
-      <div class="card shadow">
-        <div class="card-header">
-          <h3 class="m-0 font-weight-bold">
+      <div className="card shadow">
+        <div className="card-header">
+          <h3 className="m-0 font-weight-bold">
             <i className={iconModulo}></i> <span className="title py-3">{tituloModulo}</span>
           </h3>
           <div>
@@ -156,7 +156,7 @@ const TablaProductos = ({ loading, listaProductos, setEjecutarConsulta }) => {
                     <th className="thTable" style={{ "width": "50%" }}>Producto</th>
                     <th className="thTable">Precio</th>
                     <th className="thTable">Estado</th>
-                    <th colspan="3" className="">Acciones</th>
+                    <th colSpan="3" className="">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -215,7 +215,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
     await updateProduct(
       producto._id,
       {
-        nombre: infoNuevoProducto.nombre,
+        nombre: infoNuevoProducto.nombre.toUpperCase(),
         precio: infoNuevoProducto.precio,
         estado: infoNuevoProducto.estado,
       },
@@ -253,18 +253,18 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
     <tr>
       {edit ? (
         <>
-          <td>{infoNuevoProducto._id}</td>
+          <td>{infoNuevoProducto._id.slice(20)}</td>
           <td>
-            <input style={{ textTransform: 'uppercase'}}
-              className='p-2 rounded-lg m-2'
+            <input 
+              className='form-control rounded-lg'
               type='text'
-              value={infoNuevoProducto.nombre}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, nombre: e.target.value })}
+              value={infoNuevoProducto.nombre.toUpperCase()}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, nombre: e.target.value.toUpperCase() })}
             />
           </td>
           <td>
             <input 
-              className='p-2 rounded-lg m-2'
+              className='form-control rounded-lg'
               type='number'
               value={infoNuevoProducto.precio}
               onChange={(e) =>
@@ -273,11 +273,11 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
               required />
           </td>
           <td>
-            <select className='form-control rounded-lg m-2' value={infoNuevoProducto.estado}
+            <select className='form-control rounded-lg' value={infoNuevoProducto.estado}
               onChange={(e) =>
                 setInfoNuevoProducto({ ...infoNuevoProducto, estado: e.target.value })
               }>
-              <option value="">Seleccione opción</option>
+              <option  disabled value={0}>Seleccione estado</option>
               <option value="Disponible">Disponible</option>
               <option value="No disponible">No disponible</option>
             </select>
@@ -354,7 +354,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
 
     await createProduct(
       {
-        nombre: nuevoProducto.nombre,
+        nombre: nuevoProducto.nombre.toUpperCase(),
         categoria: nuevoProducto.categoria,
         unidad_medida: nuevoProducto.unidad_medida,
         precio: nuevoProducto.precio,
@@ -381,7 +381,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
         </div>
         <div className="col-md-4">
           <label htmlFor="categoria" className="form-label">Categoría</label>
-          <select class="form-control" name="categoria" required>
+          <select className="form-control" name="categoria" required>
             <option value="">-- Seleccione una opción --</option>
             <option>Sin categoría</option>
             <option>Categoría 1</option>
@@ -393,7 +393,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
         <div className="col-md-5">
           <label htmlFor="unidad_medida" className="form-label">Unidad de Medida</label>
           <div className="input-group has-validation">
-            <select name="unidad_medida" class="form-control" required>
+            <select name="unidad_medida" className="form-control" required>
               <option value="">-- Seleccione una opción --</option>
               <option>Unidad</option>
               <option>Paquete</option>
@@ -416,7 +416,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
         </div>
         {/* <div className="col-12">
           <label htmlFor="nota" className="form-label">Información adicional del producto</label>
-          <textarea name="nota" class="form-control" rows="5"></textarea>
+          <textarea name="nota" className="form-control" rows="5"></textarea>
         </div> */}
         <div className="col-12">
           <button type="submit" className="btn btn-primary">Guardar</button>
