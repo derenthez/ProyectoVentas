@@ -6,7 +6,11 @@ import { Auth0Provider } from "@auth0/auth0-react";
 function App() {
   return (
     // <AppRouter></AppRouter>
-    <Auth0Provider>
+    <Auth0Provider
+    domain="ciclo3-misiontic2022.us.auth0.com"
+    clientId="H9EPzWHGPHx17ep2HtG3UseuIGDO9P4o"
+    redirectUri={window.location.origin}
+    >
     <RouterApp></RouterApp>
     </Auth0Provider>
   );

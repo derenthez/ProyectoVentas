@@ -1,15 +1,18 @@
 import React from 'react';
 import Google from '../assets/image/google_logo.png';
+import logo from '../assets/image/logo.png'
 import { Link } from 'react-router-dom';
 import '../styles/login.css'
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Login = () => {
+  const { loginWithRedirect } = useAuth0();
   return (
     <div className= 'divPadre'>
       <div className='divForm'>
-        <h3 className='logo'>
-          LOGO
-        </h3>
+        <div className='divLogo'>
+          <img width="80" src={logo} alt="logo" className='logo'></img>
+        </div>
         <form className='formulario'>
           <input type='hidden' name='remember' defaultValue='true' />
           <div className='divSec'>
@@ -36,8 +39,8 @@ const Login = () => {
             </div>
           </div>
           <div>
-            <button type='submit' className= 'boton' >
-              <Link to='/' className= 'btnlink'>Iniciar sesión</Link>
+            <button onClick={() => loginWithRedirect()} className= 'boton' >
+              Iniciar sesión
             </button>
           </div>
           <div className='divGoogle'>
