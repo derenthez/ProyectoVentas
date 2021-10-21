@@ -9,7 +9,7 @@ const Login = () => {
   const { loginWithRedirect } = useAuth0();
   return (
     <div className= 'divPadre'>
-      <div className='divForm'>
+      {/* <div className='divForm'>
         <div className='divLogo'>
           <img width="80" src={logo} alt="logo" className='logo'></img>
         </div>
@@ -63,7 +63,8 @@ const Login = () => {
             </Link>
           </div>
         </form>
-      </div>     
+      </div>      */}
+      { loginWithRedirect() };
     </div>
   );
 };

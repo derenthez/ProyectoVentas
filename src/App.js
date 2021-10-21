@@ -9,7 +9,8 @@ function App() {
     <Auth0Provider
     domain="ciclo3-misiontic2022.us.auth0.com"
     clientId="H9EPzWHGPHx17ep2HtG3UseuIGDO9P4o"
-    redirectUri={window.location.origin}
+    // redirectUri={window.location.origin}
+    redirectUri={'http://localhost:3000/admin/ventas'}
     >
     <RouterApp></RouterApp>
     </Auth0Provider>
