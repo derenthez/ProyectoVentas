@@ -37,7 +37,7 @@ export const FormProducts = (datos) => {
                 </div>
                 <div className="col-md-4">
                     <label htmlFor="categoria" className="form-label">Categoría</label>
-                    <select className="form-control" id="categoria" name="categoria" required>
+                    <select class="form-control" id="categoria" name="categoria" required>
                         <option value="">-- Seleccione una opción --</option>
                         <option value="1">Sin categoría</option>
                         <option value="2">Categoría 1</option>
@@ -55,7 +55,7 @@ export const FormProducts = (datos) => {
                 <div className="col-md-5">
                     <label htmlFor="unidadMedida" className="form-label">Unidad de Medida</label>
                     <div className="input-group has-validation">
-                        <select className="form-control" id="unidadMedida" name="unidadMedida" required>
+                        <select class="form-control" id="unidadMedida" name="unidadMedida" required>
                             <option value="">-- Seleccione una opción --</option>
                             <option value="1">Unidad</option>
                             <option value="2">Paquete</option>
@@ -81,7 +81,7 @@ export const FormProducts = (datos) => {
                 </div>
                 <div className="col-md-4">
                     <label htmlFor="categoria" className="form-label">Impuesto</label>
-                    <select className="form-control" id="categoria" name="categoria" required>
+                    <select class="form-control" id="categoria" name="categoria" required>
                         <option value="">-- Seleccione una opción --</option>
                         <option value="0">Sin impuesto</option>
                         <option value="5">5%</option>
@@ -96,7 +96,7 @@ export const FormProducts = (datos) => {
                 </div>
                 <div className="col-12">
                     <label htmlFor="nota" className="form-label">Información adicional del producto</label>
-                    <textarea className="form-control" rows="5" id="nota" name="nota"></textarea>
+                    <textarea class="form-control" rows="5" id="nota" name="nota"></textarea>
                 </div>
                 <div className="col-12">
                     <button className="btn btn-primary" type="submit">Guardar</button>
