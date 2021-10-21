@@ -6,7 +6,7 @@ export const Sidebar = () => {
 
     //AGREGAR RUTAS NUEVAS, SU NOMBRE E ICONO PARA EL SIDEBAR
     const routeSidebar = [
-    {ruta:"/admin/usuarios", nombre:"Usuarios", icon:"fas fa-users"},
+    // {ruta:"/admin/usuarios", nombre:"Usuarios", icon:"fas fa-users"},
     {ruta:"/admin/vendedores", nombre:"Vendedores", icon:"fas fa-users"},
     {ruta:"/admin/ventas", nombre:"Ventas", icon:"fas fa-shopping-cart"},
     {ruta:"/admin/productos", nombre:"Productos", icon:"fas fa-list"},
@@ -28,7 +28,7 @@ export const Sidebar = () => {
 const SidebarRoute = ({ruta,nombre,icon}) => {
     return(
         <li>
-        <NavLink exact className='link text-dark w-100 py-2 px-3 rounded d-inline-block' activeClassName="active" to={ruta}><i className={`${icon} me-2`}></i>{nombre}</NavLink>
+        <NavLink exact className='link text-dark w-100 py-2 px-3 rounded d-inline-block' activeClassName="active" to={ruta}><i class={`${icon} me-2`}></i>{nombre}</NavLink>
     </li> 
     )
 }
