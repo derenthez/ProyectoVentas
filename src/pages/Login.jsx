@@ -6,9 +6,9 @@ import '../styles/login.css'
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Login = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
   return (
-    <div className= 'divPadre'>
+    <div className='divPadre'>
       {/* <div className='divForm'>
         <div className='divLogo'>
           <img width="80" src={logo} alt="logo" className='logo'></img>
@@ -64,7 +64,8 @@ const Login = () => {
           </div>
         </form>
       </div>      */}
-      { loginWithRedirect() };
+      {loginWithRedirect()}
+
     </div>
   );
 };
