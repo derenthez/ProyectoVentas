@@ -11,7 +11,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
-
+import { useAuth0 } from "@auth0/auth0-react";
 import logo from 'assets/image/logo1.png'
 import user from 'assets/image/user.png'
 import 'styles/navbar.css'
@@ -20,6 +20,8 @@ const NavbarNav = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
+  const { logout } = useAuth0();
+
 
   return (
     <div>
@@ -42,7 +44,7 @@ const NavbarNav = (props) => {
                   Configuraciones
                 </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem onClick={() => {window.location.href= "/login"}}>
+                <DropdownItem onClick={() => logout({ returnTo: window.location.origin })}>
                   Cerrar Sesión
                 </DropdownItem>
               </DropdownMenu>
