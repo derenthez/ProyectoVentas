@@ -290,7 +290,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             <select className="form-control rounded-lg" value={infoNuevoUsuario.estado} onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
               }> 
-              <option disabled value="">Seleccione opción</option>
+              <option value="Pendiente">Pendiente</option>
               <option value="Autorizado">Autorizado</option>
               <option value="No autorizado">No autorizado</option>
             </select>
@@ -387,7 +387,7 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
   return (
     <form ref={form} onSubmit={submitForm} className='row g-3'>
       <div className="col-md-6">
-        <label htmlFor="usuario" className="form-label">Nombre del usuario (E-mail)</label>
+        <label htmlFor="usuario" className="form-label">Usuario (E-mail)</label>
         <input name='usuario' type="email" className="form-control" placeholder="prueba@example.com" required />
       </div>
       <div className="col-md-6">
@@ -409,8 +409,8 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
       </div>
       <div className="col-md-4">
         <label htmlFor="estado" className="form-label">Estado del usuario</label>
-        <select name='estado' className='form-control' defaultValue={0} required>
-          <option disabled value={0}>Seleccione una opción</option>
+        <select name='estado' className='form-control' defaultValue="Pendiente" required>
+          <option value="Pendiente">Pendiente</option>
           <option value="Autorizado">Autorizado</option>
           <option value="No autorizado">No autorizado</option>
         </select>

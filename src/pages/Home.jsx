@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom';
 import '../styles/home.css'
 import computer from 'assets/image/undraw_Code_thinking_re_gka2.svg'
 
@@ -11,7 +12,7 @@ export class Home extends Component {
                         <h1 className="coverH1">BUILD YOUR</h1>
                         <h2 className="coverH2">BUSINESS</h2>
                         <p className="coverP">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus molestias cumque at, impedit eum corrupti libero ipsam placeat, nulla, maiores totam qui ea distinctio. Velit, distinctio. Iste iusto deserunt esse?</p>
-                        <input className="coverInput" type="button" value="Get Started"></input>
+                        <Link to="/login"><input className="coverInput" type="button" value="Get Started"></input></Link>
                     </div>
                     <div className="col-md-6 col-sm col-lg-6">
                         <img className="img" src={computer} alt=""></img>
