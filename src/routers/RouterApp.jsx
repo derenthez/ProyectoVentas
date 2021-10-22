@@ -10,14 +10,13 @@ import { Users } from 'pages/Users';
 import { Products } from 'pages/Products';
 import { Footer } from 'components/Footer';
 import { Sales } from 'pages/Sales';
-import { Sellers } from 'pages/Sellers';
 
 const RouterApp = () => {
     return (
         <Router>
             <Switch>
                 {/* RUTAS PRIVADAS ADMIN */}
-                <Route path={['/admin/usuarios','/admin/ventas', '/admin/productos', '/admin/vendedores']}>
+                <Route path={['/admin/usuarios','/admin/ventas', '/admin/productos']}>
                     <PrivateLayout>
                         <Switch>
                             <Route path='/admin/usuarios'>
@@ -28,9 +27,6 @@ const RouterApp = () => {
                             </Route>
                             <Route path='/admin/productos'>
                                 <Products/>
-                            </Route>
-                            <Route path='/admin/vendedores'>
-                                <Sellers/>
                             </Route>
                         </Switch>
                     </PrivateLayout>

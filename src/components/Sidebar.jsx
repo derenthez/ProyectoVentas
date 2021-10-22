@@ -7,7 +7,6 @@ export const Sidebar = () => {
     //AGREGAR RUTAS NUEVAS, SU NOMBRE E ICONO PARA EL SIDEBAR
     const routeSidebar = [
     {ruta:"/admin/usuarios", nombre:"Usuarios", icon:"fas fa-users"},
-    {ruta:"/admin/vendedores", nombre:"Vendedores", icon:"fas fa-users"},
     {ruta:"/admin/ventas", nombre:"Ventas", icon:"fas fa-shopping-cart"},
     {ruta:"/admin/productos", nombre:"Productos", icon:"fas fa-list"},
     ]

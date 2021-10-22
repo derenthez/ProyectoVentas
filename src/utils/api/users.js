@@ -41,3 +41,16 @@ export const deleteUser = async (id, successCallback, errorCallback) => {
     };
     await axios.request(options).then(successCallback).catch(errorCallback);
   };
+
+
+  //TRAER TODOS LOS VENDEDORES ACTIVOS
+export const getActiveSellers = async (successCallback, errorCallback) => {
+  const options = { method: 'GET', url: `${backend}/usuarios/vendedores/activos` };
+  await axios.request(options).then(successCallback).catch(errorCallback);
+};
+
+  //TRAER TODOS LOS VENDEDORES NO ACTIVOS
+  export const getInactiveSellers = async (successCallback, errorCallback) => {
+    const options = { method: 'GET', url: `${backend}/usuarios/vendedores/bloqueados` };
+    await axios.request(options).then(successCallback).catch(errorCallback);
+  };
