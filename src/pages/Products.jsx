@@ -397,7 +397,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
               <option value="">-- Seleccione una opción --</option>
               <option>Unidad</option>
               <option>Paquete</option>
-              <option>Unidad n</option>
+              {/* <option>Unidad n</option> */}
             </select>
           </div>
         </div>
