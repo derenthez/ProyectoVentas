@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { Dialog } from '@material-ui/core';
 import { getProductByID, getSales, createSale, updateSale, deleteSale } from 'utils/api/sales';
 import { getProducts } from 'utils/api/products';
-import { getSellers } from 'utils/api/sellers';
+import { getActiveSellers } from 'utils/api/users';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
 import 'styles/modulo.css';
@@ -42,7 +42,7 @@ export const Sales = () => {
       );
     };
     const fetchVendores = async () => {
-      await getSellers(
+      await getActiveSellers(
         (response) => {
           console.log("vendedores " +JSON.stringify(response.data));
           setVendedores(response.data);
@@ -488,7 +488,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
           <select name="vendedor" className="form-control" defaultValue="" required>
             <option disabled value="">Seleccione un Vendedor</option>
             {vendedores && vendedores.map((el) => {
-              return <option key={nanoid()} value={el._id}>{`${el.nombre} (${el.especialidad})`}</option>;
+              return <option key={nanoid()} value={el._id}>{`${el.usuario}`}</option>;
             })}
           </select>
         </div>

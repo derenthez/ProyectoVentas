@@ -255,12 +255,13 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         <>
           <td>{infoNuevoUsuario._id.slice(20)}</td>
           <td>
-            <input
+            {/* <input
               className='form-control rounded-lg'
               type='text'
               value={infoNuevoUsuario.usuario}
               onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, usuario: e.target.value })}
-            />
+            /> */}
+            {infoNuevoUsuario.usuario}
           </td>
           <td>
             {/* <input
@@ -279,10 +280,10 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
               <option value="Sin rol">Sin rol</option>
               <option value="Vendedor">Vendedor</option>
               <option value="Administrador">Administrador</option>
-              <option value="Ejecutivo">Ejecutivo</option>
+              {/* <option value="Ejecutivo">Ejecutivo</option>
               <option value="Operario">Operario</option>
               <option value="Director">Director</option>
-              <option value="Gerente comercial">Gerente comercial</option>
+              <option value="Gerente comercial">Gerente comercial</option> */}
             </select>
           </td>
           <td>
@@ -291,7 +292,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
               }> 
               <option disabled value="">Seleccione opción</option>
               <option value="Autorizado">Autorizado</option>
-              <option value="Bloqueado">Bloqueado</option>
+              <option value="No autorizado">No autorizado</option>
             </select>
           </td>
         </>
@@ -386,8 +387,8 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
   return (
     <form ref={form} onSubmit={submitForm} className='row g-3'>
       <div className="col-md-6">
-        <label htmlFor="usuario" className="form-label">Nombre del usuario</label>
-        <input name='usuario' type="text" className="form-control" placeholder="Usuario" required />
+        <label htmlFor="usuario" className="form-label">Nombre del usuario (E-mail)</label>
+        <input name='usuario' type="email" className="form-control" placeholder="prueba@example.com" required />
       </div>
       <div className="col-md-6">
         <label htmlFor="clave" className="form-label">Clave de usuario</label>
@@ -400,10 +401,10 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
           <option value="Sin rol">Sin rol</option>
           <option value="Vendedor">Vendedor</option>
           <option value="Administrador">Administrador</option>
-          <option value="Ejecutivo">Ejecutivo</option>
+          {/* <option value="Ejecutivo">Ejecutivo</option>
           <option value="Operario">Operario</option>
           <option value="Director">Director</option>
-          <option value="Gerente comercial">Gerente comercial</option>
+          <option value="Gerente comercial">Gerente comercial</option> */}
         </select>
       </div>
       <div className="col-md-4">
@@ -411,7 +412,7 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
         <select name='estado' className='form-control' defaultValue={0} required>
           <option disabled value={0}>Seleccione una opción</option>
           <option value="Autorizado">Autorizado</option>
-          <option value="Bloqueado">Bloqueado</option>
+          <option value="No autorizado">No autorizado</option>
         </select>
       </div>
       <div className="col-12">
