@@ -1,7 +1,7 @@
 import React from 'react';
-import Google from '../assets/image/google_logo.png';
-import logo from '../assets/image/logo.png'
-import { Link } from 'react-router-dom';
+//import Google from '../assets/image/google_logo.png';
+//import logo from '../assets/image/logo.png'
+//import { Link } from 'react-router-dom';
 import '../styles/login.css'
 import { useAuth0 } from "@auth0/auth0-react";
 
