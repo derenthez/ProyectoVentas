@@ -27,7 +27,7 @@ const NavbarNav = (props) => {
     isAuthenticated && (
       <div>
         <Navbar color="light" light expand="md" className="px-4">
-          <NavbarBrand className="navbarBrand" href="/admin/perfil">
+          <NavbarBrand className="navbarBrand" href="#">
             <img width="80" className="px-1" src={logo} alt="" />{user.name.toUpperCase()}
           </NavbarBrand>
           <NavbarToggler onClick={toggle} />

@@ -6,9 +6,15 @@ const backend = process.env.BACK_URL || "http://localhost:5000";
 
 //TRAER TODOS LOS USUARIOS
 export const getUsers = async (successCallback, errorCallback) => {
-    const options = { method: 'GET', url: `${backend}/usuarios` };
+    const options = { method: 'GET', url: `${backend}/usuarios/` };
     await axios.request(options).then(successCallback).catch(errorCallback);
   };
+
+//CONSULTAR USUARIO POR NOMBRE
+export const getUsersByUsuario = async (usuario, successCallback, errorCallback) => {
+  const options = { method: 'GET', url: `${backend}/usuarios/verificacion/${usuario}/` };
+  await axios.request(options).then(successCallback).catch(errorCallback);
+};
 
 //CREAR UN NUEVO USUARIO
 export const createUser = async (data, successCallback, errorCallback) => {
@@ -41,7 +47,6 @@ export const deleteUser = async (id, successCallback, errorCallback) => {
     };
     await axios.request(options).then(successCallback).catch(errorCallback);
   };
-
 
   //TRAER TODOS LOS VENDEDORES ACTIVOS
 export const getActiveSellers = async (successCallback, errorCallback) => {

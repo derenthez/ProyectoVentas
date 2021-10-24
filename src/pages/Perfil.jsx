@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export const Profile = () => {
     const { user, isAuthenticated, isLoading } = useAuth0();
+    const [roluser,setRolUser]=useState();
+    const [estadouser,setEstadoUser]=useState();
+    const [userinterno,setUserInterno]=useState([]);
 
     if (isLoading) {
         return <div>Loading ...</div>;
@@ -27,30 +30,31 @@ export const Profile = () => {
                             <div className="row mt-3">
                                 <div className="col-md-6">
                                     <label className="labels">Nombres</label>
-                                    <input type="text" className="form-control" placeholder="Nombre" value={user.given_name.toUpperCase()} />
+                                    <input type="text" className="form-control" placeholder="Nombre" value={user.given_name || ''} />
                                 </div>
                                 <div className="col-md-6">
                                     <label className="labels">Apellidos</label>
-                                    <input type="text" className="form-control" value={user.family_name.toUpperCase()} placeholder="Apellidos" />
+                                    <input type="text" className="form-control" placeholder="Apellidos" value={user.family_name || ''} />
                                 </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col-md-3">
                                     <label className="labels">Rol</label>
-                                    <input type="text" className="form-control" placeholder="tipo usuario" value="" />
+                                    <input type="text" className="form-control" placeholder="tipo usuario" value={roluser || 'Sin rol'}/>
                                 </div>
                                 <div className="col-md-3">
-                                    <label className="labels">Teléfono</label>
-                                    <input type="text" className="form-control" placeholder="Teléfono" value="" />
+                                    <label className="labels">Estado</label>
+                                    <input type="text" className="form-control" placeholder="Teléfono" value={estadouser || 'Pendiente'} />
                                 </div>
                                 <div className="col-md-6">
                                     <label className="labels">Email</label>
                                     <input type="text" className="form-control" placeholder="Email" value={user.email.toLowerCase()} />
                                 </div>
                             </div>
-                            <div className="col-md-12">
-                                <label className="labels">Dirección</label>
-                                <input type="text" className="form-control" placeholder="Dirección" value="" />
+                            <div className="row mt-3">
+                                <div className={user.email_verified ? ("col-md-12 alert alert-success"):("col-md-12 alert alert-danger")} role="alert">
+                                    {user.email_verified ? ("Datos verificados"):("Datos sin verificar, por favor consulta tú email o pidele al administrador que te envie una nueva solicitud de verificación.")}
+                                </div>
                             </div>
                         </div>
                     </div>

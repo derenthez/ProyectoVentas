@@ -333,12 +333,9 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
                 setInfoNuevoVenta({ ...infoNuevoVenta, estado: e.target.value })
               }>
               <option disabled value="">Seleccione opción</option>
-              <option value="Creación">Creación</option>
-              <option value="Embalaje">Embalaje</option>
-              <option value="Despacho">Despacho</option>
-              <option value="Ruta">Ruta</option>
-              <option value="Ubicación">Ubicación</option>
-              <option value="Recepción">Recepción</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Entregada">Entregada</option>
             </select>
           </td>
         </>
@@ -367,10 +364,10 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
               <button type="button" className="btn btn-success buttonTable">
                 <i className="fa fa-eye"></i>
               </button>
-              <button type="button" onClick={() => infoNuevoVenta.estado!="Recepción" ? (setOpenDialog(true)):(toast.error("La venta no se puede eliminar"))} className="btn btn-danger buttonTableTrash">
+              <button type="button" onClick={() => infoNuevoVenta.estado!="Entregada" && infoNuevoVenta.estado!="Cancelada" ? (setOpenDialog(true)):(toast.error("La venta no se puede eliminar"))} className="btn btn-danger buttonTableTrash">
                 <i className="fas fa-trash-alt"></i>
               </button>
-              <button type="button" className="btn btn-primary buttonTable" title='Editar Venta' onClick={() => infoNuevoVenta.estado!="Recepción" ? (setEdit(!edit)):(toast.error("La venta no se puede modificar"))}>
+              <button type="button" className="btn btn-primary buttonTable" title='Editar Venta' onClick={() => infoNuevoVenta.estado!="Entregada" && infoNuevoVenta.estado!="Cancelada" ? (setEdit(!edit)):(toast.error("La venta no se puede modificar"))}>
                 <i className="fas fa-pencil-alt"></i>
               </button>
             </>
@@ -459,7 +456,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
         },
         detalles_venta: listaProductos,
         total_venta: datosFormulario.valor,
-        estado:"Creación",
+        estado:"",
       },
       (response) => {
         console.log(response.data);
@@ -488,7 +485,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
           <select name="vendedor" className="form-control" defaultValue="" required>
             <option disabled value="">Seleccione un Vendedor</option>
             {vendedores && vendedores.map((el) => {
-              return <option key={nanoid()} value={el._id}>{`${el.usuario}`}</option>;
+              return <option key={nanoid()} value={el._id}>{el.nombre.toUpperCase() || 'VENTAS'} {el.apellido.toUpperCase() || 'POR INTERNET - ' + el.email.toUpperCase()}</option>;
             })}
           </select>
         </div>
