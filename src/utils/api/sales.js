@@ -4,11 +4,30 @@ dotenv.config({ path: '../../../.env' });
 
 const backend = process.env.BACK_URL || "http://localhost:5000";
 
-//console.log(backend);
+const getToken = () => {
+  return `Bearer ${localStorage.getItem('token')}`;
+};
+
+const cabecera= {'Content-Type': 'application/json'};
+
+//const cabecera = () => {
+  //   if(localStorage.getItem('token'))
+  //   {
+  //       return {'Content-Type': 'application/json', Authorization: `${getToken()}`};
+  //   }
+  //   else
+  //   {
+  //     return {'Content-Type': 'application/json'};
+  //   }
+  // };
 
 //TRAER TODAS LAS VENTAS
 export const getSales = async (successCallback, errorCallback) => {
-    const options = { method: 'GET', url: `${backend}/ventas` };
+    const options = { 
+      method: 'GET', 
+      url: `${backend}/ventas`,
+      // headers: {cabecera},
+    };
     await axios.request(options).then(successCallback).catch(errorCallback);
   };
 
@@ -17,7 +36,7 @@ export const createSale = async (data, successCallback, errorCallback) => {
     const options = { 
       method: 'POST',
       url: `${backend}/ventas/`,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {cabecera},
       data,
     };
     await axios.request(options).then(successCallback).catch(errorCallback);
@@ -28,7 +47,7 @@ export const updateSale = async (id, data, successCallback, errorCallback) => {
     const options = {
       method: 'PATCH',
       url: `${backend}/ventas/${id}/`,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {cabecera},
       data,
     };
     await axios.request(options).then(successCallback).catch(errorCallback);
@@ -39,7 +58,7 @@ export const deleteSale = async (id, successCallback, errorCallback) => {
     const options = {
       method: 'DELETE',
       url: `${backend}/ventas/${id}`,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {cabecera},
     };
     await axios.request(options).then(successCallback).catch(errorCallback);
   };

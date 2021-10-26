@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
 import { Dialog} from '@material-ui/core';
-import { getUsers, createUser, updateUser, deleteUser } from 'utils/api/users';
+import { getUsers, getUsersByEmail, createUser, updateUser, deleteUser } from 'utils/api/users';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
 import 'styles/modulo.css';
@@ -27,7 +27,6 @@ export const Users = () => {
       setLoading(true);
       await getUsers(
         (response) => {
-          console.log("Respuesta: ", response);
           setUsuarios(response.data);
           setEjecutarConsulta(false);
           setLoading(false);
@@ -38,7 +37,7 @@ export const Users = () => {
         }
       );
     };
-    console.log("consulta", ejecutarConsulta);
+
     if (ejecutarConsulta) {
       fetchUsuarios();
     }
@@ -68,7 +67,7 @@ export const Users = () => {
             <i className={iconModulo}></i> <span className="title py-3">{tituloModulo}</span>
           </h3>
           <div>
-            <button type="button" className="btn btn-primary btn-block"
+            <button type="button" disabled className="btn btn-primary btn-block"
               onClick={() => {
                 setMostrarTabla(!mostrarTabla);
               }} >
@@ -87,7 +86,6 @@ export const Users = () => {
                 listaUsuarios={usuarios}
                 setUsuarios={setUsuarios}
               />)
-
             }
             <ToastContainer position='bottom-center' autoClose={5000} />
           </div>
@@ -153,10 +151,11 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
                 <thead className="tableStyle">
                   <tr>
                     <th className="thTableId">#</th>
-                    <th className="thTable" style={{ "width": "50%" }}>Usuario</th>
+                    <th className="thTable" style={{ "width": "30%" }}>Usuario</th>
+                    <th className="thTable" style={{ "width": "30%" }}>Email</th>
                     <th className="thTable">Rol</th>
                     <th className="thTable">Estado</th>
-                    <th colSpan="3" className="">Acciones</th>
+                    <th style={{textAlign:"centeer"}}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -181,13 +180,14 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
             <img
               className="card-img-top"
               src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22286%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20286%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17c80916396%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17c80916396%22%3E%3Crect%20width%3D%22286%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22107.1953125%22%20y%3D%2296.3%22%3E286x180%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-              alt={el.usuario} style={{ "height": "100px" }}
+              alt={el.email} style={{ "height": "100px" }}
             />
             <div className="card-body">
-              <h5 className="card-title">{el.usuario} </h5>
+              <h5 className="card-title">{el.nombre} {el.apellido} </h5>
+              <span>{el._id}</span>
               <p className="card-text">
-                <span>{el.rol} </span>
-                <br />
+                <span>{el.email}</span><br />
+                <span>{el.rol} </span><br />
                 <span>{el.estado} </span>
               </p>
             </div>
@@ -204,7 +204,9 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
     _id: usuario._id,
-    usuario: usuario.usuario,
+    email: usuario.email,
+    nombre: usuario.nombre,
+    apellido: usuario.apellido,
     rol: usuario.rol,
     estado: usuario.estado,
   });
@@ -215,12 +217,11 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     await updateUser(
       usuario._id,
       {
-        usuario: infoNuevoUsuario.usuario.toLowerCase(),
+        email: infoNuevoUsuario.email.toLowerCase(),
         rol: infoNuevoUsuario.rol,
         estado: infoNuevoUsuario.estado,
       },
       (response) => {
-        console.log(response.data);
         toast.success('Usuario modificado con éxito');
         setEdit(false);
         setEjecutarConsulta(true);
@@ -236,7 +237,6 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     await deleteUser(
       usuario._id,
       (response) => {
-        console.log(response.data);
         toast.success('Usuario eliminado con éxito');
         setEjecutarConsulta(true);
       },
@@ -254,14 +254,15 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
       {edit ? (
         <>
           <td>{infoNuevoUsuario._id.slice(20)}</td>
+          <td>{infoNuevoUsuario.nombre} {infoNuevoUsuario.apellido}</td>
           <td>
             {/* <input
               className='form-control rounded-lg'
               type='text'
-              value={infoNuevoUsuario.usuario}
-              onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, usuario: e.target.value })}
+              value={infoNuevoUsuario.email}
+              onChange={(e) => setInfoNuevoUsuario({ ...infoNuevoUsuario, email: e.target.value })}
             /> */}
-            {infoNuevoUsuario.usuario}
+            {infoNuevoUsuario.email}
           </td>
           <td>
             {/* <input
@@ -290,6 +291,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             <select className="form-control rounded-lg" value={infoNuevoUsuario.estado} onChange={(e) =>
                 setInfoNuevoUsuario({ ...infoNuevoUsuario, estado: e.target.value })
               }> 
+              <option disabled value="">Seleccione opción</option>
               <option value="Pendiente">Pendiente</option>
               <option value="Autorizado">Autorizado</option>
               <option value="No autorizado">No autorizado</option>
@@ -299,13 +301,14 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
       ) : (
         <>
           <td>{usuario._id.slice(20)}</td>
-          <td>{usuario.usuario}</td>
+          <td>{usuario.nombre} {usuario.apellido}</td>
+          <td>{usuario.email}</td>
           <td>{usuario.rol}</td>
           <td>{usuario.estado}</td>
         </>
       )}
       <td>
-        <div className='justify-around'>
+        <div className='justify-around' style={{width:"100px",textAlign:"center"}}>
           {edit ? (
             <>
               <button type="button" className="btn btn-success buttonTable" title="Confirmar Edición"  onClick={() => actualizarUsuario()}>
@@ -364,34 +367,62 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
     fd.forEach((value, key) => {
       nuevoUsuario[key] = value;
     });
-
-    await createUser(
-      {
-        usuario: nuevoUsuario.usuario.toLowerCase(),
-        rol: nuevoUsuario.rol,
-        estado: nuevoUsuario.estado,
-      },
+    var responseEmail = null;
+    await getUsersByEmail(
+      nuevoUsuario.email.toLowerCase(),
       (response) => {
-        console.log(response.data);
-        toast.success('Usuario agregado con éxito');
+        responseEmail = response.data;
+        //setUserData(response.data);
+        //setLoadingUserInformation(false);
       },
-      (error) => {
-        console.error(error);
-        toast.error('Error creando usuario');
+      (err) => {
+        console.log('Error ', err);
+        responseEmail = "Error";
+        //logout({ returnTo: 'http://localhost:3000' });
       }
     );
 
+    if (responseEmail === null) {
+      await createUser(
+        {
+          nombre: nuevoUsuario.nombre.toUpperCase(),
+          apellido: nuevoUsuario.apellido.toUpperCase(),
+          email: nuevoUsuario.email.toLowerCase(),
+          rol: nuevoUsuario.rol,
+          estado: nuevoUsuario.estado,
+        },
+        (response) => {
+          toast.success('Usuario agregado con éxito');
+        },
+        (error) => {
+          console.error(error);
+          toast.error('Error creando usuario');
+        }
+      );
+    }
+
+    if(responseEmail!=null && responseEmail!=="Error") {
+      toast.error('Error creando usuario, el email ya se encuentra en uso');  
+    }
     setMostrarTabla(true);
   };
 
   return (
     <form ref={form} onSubmit={submitForm} className='row g-3'>
       <div className="col-md-6">
-        <label htmlFor="usuario" className="form-label">Usuario (E-mail)</label>
-        <input name='usuario' type="email" className="form-control" placeholder="prueba@example.com" required />
+        <label htmlFor="nombre" className="form-label">Nombres</label>
+        <input name='nombre' type="text" className="form-control" placeholder="" required />
       </div>
       <div className="col-md-6">
-        <label htmlFor="clave" className="form-label">Clave de usuario</label>
+        <label htmlFor="apellido" className="form-label">Apellidos</label>
+        <input name='apellido' type="text" className="form-control" placeholder="" required />
+      </div>
+      <div className="col-md-6">
+        <label htmlFor="email" className="form-label">E-mail</label>
+        <input name='email' type="email" className="form-control" placeholder="prueba@example.com" required />
+      </div>
+      <div className="col-md-6">
+        <label htmlFor="clave" className="form-label">Clave de ingreso</label>
         <input name='clave' type="password" className="form-control" placeholder="Contraseña" required />
       </div>
       <div className="col-md-8">
@@ -401,10 +432,6 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
           <option value="Sin rol">Sin rol</option>
           <option value="Vendedor">Vendedor</option>
           <option value="Administrador">Administrador</option>
-          {/* <option value="Ejecutivo">Ejecutivo</option>
-          <option value="Operario">Operario</option>
-          <option value="Director">Director</option>
-          <option value="Gerente comercial">Gerente comercial</option> */}
         </select>
       </div>
       <div className="col-md-4">

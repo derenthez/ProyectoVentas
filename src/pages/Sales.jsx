@@ -30,7 +30,6 @@ export const Sales = () => {
       setLoading(true);
       await getSales(
         (response) => {
-          console.log("Respuesta ventas: ", response);
           setVentas(response.data);
           setEjecutarConsultaVentas(false);
           setLoading(false);
@@ -44,7 +43,6 @@ export const Sales = () => {
     const fetchVendores = async () => {
       await getActiveSellers(
         (response) => {
-          console.log("vendedores " +JSON.stringify(response.data));
           setVendedores(response.data);
         },
         (error) => {
@@ -55,7 +53,6 @@ export const Sales = () => {
     const fetchProductos = async () => {
       await getProducts(
         (response) => {
-          console.log("Productos " +JSON.stringify(response.data));
           setProductos(response.data);
         },
         (error) => {
@@ -63,7 +60,7 @@ export const Sales = () => {
         }
       );
     };
-    console.log("consulta ventas", ejecutarConsultaVentas);
+
     if (ejecutarConsultaVentas) {
       fetchVentas();
     }
@@ -236,7 +233,7 @@ const TablaVentas = ({ loading, listaVentas, setEjecutarConsultaVentas }) => {
 const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [totalVenta, SetTotalVenta]=useState(0); 
+  //const [totalVenta, SetTotalVenta]=useState(0); 
   const [infoNuevoVenta, setInfoNuevoVenta] = useState({
     _id: venta._id,
     tipo_documento: venta.cliente.tipo_documento,
@@ -254,13 +251,12 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
       {
         cliente: {
           "tipo_documento": infoNuevoVenta.tipo_documento,
-          "documento": infoNuevoVenta.documento.toUpperCase(),
-          "nombre": infoNuevoVenta.cliente.toUpperCase()
+          "documento": infoNuevoVenta.documento,
+          "nombre": infoNuevoVenta.cliente
         },
         estado: infoNuevoVenta.estado,
       },
       (response) => {
-        console.log(response.data);
         toast.success('Venta modificada con éxito');
         setEdit(false);
         setEjecutarConsultaVentas(true);
@@ -276,7 +272,6 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
     await deleteSale(
       venta._id,
       (response) => {
-        console.log(response.data);
         toast.success('Venta eliminada con éxito');
         setEjecutarConsultaVentas(true);
       },
@@ -296,8 +291,7 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
           <td>{infoNuevoVenta._id.slice(20)}</td>
           <td>
             <label htmlFor="tipo_documento_cliente" className="form-label">Tipo identificación</label>
-            <select defaultValue="Cedula de ciudadania" className="form-control"
-              className='form-control rounded-lg'
+            <select defaultValue="Cedula de ciudadania" className='form-control rounded-lg'
               value={infoNuevoVenta.tipo_documento}
               onChange={(e) => setInfoNuevoVenta({ ...infoNuevoVenta, tipo_documento: e.target.value })}
             >
@@ -333,12 +327,9 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
                 setInfoNuevoVenta({ ...infoNuevoVenta, estado: e.target.value })
               }>
               <option disabled value="">Seleccione opción</option>
-              <option value="Creación">Creación</option>
-              <option value="Embalaje">Embalaje</option>
-              <option value="Despacho">Despacho</option>
-              <option value="Ruta">Ruta</option>
-              <option value="Ubicación">Ubicación</option>
-              <option value="Recepción">Recepción</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Entregada">Entregada</option>
             </select>
           </td>
         </>
@@ -367,10 +358,10 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
               <button type="button" className="btn btn-success buttonTable">
                 <i className="fa fa-eye"></i>
               </button>
-              <button type="button" onClick={() => infoNuevoVenta.estado!="Recepción" ? (setOpenDialog(true)):(toast.error("La venta no se puede eliminar"))} className="btn btn-danger buttonTableTrash">
+              <button type="button" onClick={() => infoNuevoVenta.estado!="Entregada" && infoNuevoVenta.estado!="Cancelada" ? (setOpenDialog(true)):(toast.error("La venta no se puede eliminar"))} className="btn btn-danger buttonTableTrash">
                 <i className="fas fa-trash-alt"></i>
               </button>
-              <button type="button" className="btn btn-primary buttonTable" title='Editar Venta' onClick={() => infoNuevoVenta.estado!="Recepción" ? (setEdit(!edit)):(toast.error("La venta no se puede modificar"))}>
+              <button type="button" className="btn btn-primary buttonTable" title='Editar Venta' onClick={() => infoNuevoVenta.estado!="Entregada" && infoNuevoVenta.estado!="Cancelada" ? (setEdit(!edit)):(toast.error("La venta no se puede modificar"))}>
                 <i className="fas fa-pencil-alt"></i>
               </button>
             </>
@@ -402,8 +393,9 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
   );
 };
 
+
 //FORMULARIO VENTAS
-const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setProductos,productosTabla,setProductosTabla, listaVentas, setVentas }) => {
+const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setProductos, totalVenta, setTotalVenta,productosTabla,setProductosTabla, listaVentas, setVentas }) => {
   const curr = new Date();
   curr.setDate(curr.getDate() - 1);
   const fechaVenta = curr.toISOString().substr(0, 10);
@@ -418,34 +410,24 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
     const datosFormulario = {} ;//{};//ojo
     const listaProductos =[];
     var conte = 0;
+    var totalizando=0;
     fd.forEach((value, key) => {
       datosFormulario[key] = value;
-      console.log("el for"+key.includes("producto_"))
+      //console.log("el for"+key.includes("producto_"))
       var list =[0]
       if(key.includes("producto_"))
       {
-        console.log(productos.filter((pro) => pro._id === datosFormulario[key]));
+        //console.log(productos.filter((pro) => pro._id === datosFormulario[key]));
         const lsto = productos.filter((pro) => pro._id === datosFormulario[key]);
-        console.log("prod " + JSON.stringify(lsto[0]["nombre"]));
-        console.log("yo soy "+JSON.stringify(lsto));
+        //console.log("prod " + JSON.stringify(lsto[0]["nombre"]));
+        //console.log("yo soy "+JSON.stringify(lsto));
 
         var file = {_id: ''+datosFormulario[key], producto: ''+lsto[0]["nombre"], precio_unitario: ''+lsto[0]["precio"], cantidad:''+datosFormulario["cantidad_"+conte]};
         listaProductos.push(file);
+        totalizando=totalizando+ (parseFloat(lsto[0]["precio"]) * parseFloat(datosFormulario["cantidad_"+conte]))
         conte = conte+1;
       }
     });
-    console.log('lo que se va a insertar ', datosFormulario);
-
-    
-    //console.log(productos.filter((pro) => pro._id === datosFormulario.producto_0)[0]);
-
-    //la del profe no me funciona
-      // const listaProductos = Object.keys(datosFormulario).map((k) => {
-      //   if (k.includes('producto_')) {
-      //     return productosTabla.filter((v) => v._id ===datosFormulario[k])[0];
-      //   }
-      //   return null;
-      // })
    
     await createSale(
       {
@@ -454,15 +436,14 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
         vendedor: vendedores.filter((ventor) => ventor._id === datosFormulario.vendedor)[0],
         cliente: {
           "tipo_documento": datosFormulario.tipo_documento_cliente,
-          "documento": datosFormulario.documento_cliente.toUpperCase(),
+          "documento": datosFormulario.documento_cliente,
           "nombre": datosFormulario.nombre_cliente.toUpperCase(),
         },
         detalles_venta: listaProductos,
-        total_venta: datosFormulario.valor,
-        estado:"Creación",
+        total_venta: totalizando,//datosFormulario.valor,
+        estado:"",
       },
       (response) => {
-        console.log(response.data);
         toast.success('Venta agregada con éxito');
       },
       (error) => {
@@ -488,7 +469,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
           <select name="vendedor" className="form-control" defaultValue="" required>
             <option disabled value="">Seleccione un Vendedor</option>
             {vendedores && vendedores.map((el) => {
-              return <option key={nanoid()} value={el._id}>{`${el.usuario}`}</option>;
+              return <option key={nanoid()} value={el._id}>{el.nombre|| 'VENTAS'} {el.apellido || 'POR INTERNET - ' + el.email}</option>;
             })}
           </select>
         </div>
@@ -516,18 +497,19 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
           setProductos={setProductos}
           setProductosTabla={setProductosTabla}
         />
-        <div className="col-md-3">
+        <div className="col-md-3" hidden>
           <label htmlFor="valor" className='form-label'>Valor Total Venta</label>
           <input
             className='form-control'
             type='number'
             name='valor'
             defaultValue={0}
+            value={totalVenta || 1}
             min={1}
             required
           />
         </div>
-        <div className="col-md-2">
+        <div className="col-md-3">
         <label htmlFor="submit" className='form-label'> &nbsp; </label>
         <button
           type='submit'
@@ -545,6 +527,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
 const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
   const [productoAAgregar, setProductoAAgregar] = useState({});
   const [filasTabla, setFilasTabla] = useState([]);
+  const [totalVenta, setTotalVenta] = useState(0);
 
   useEffect(() => {
     // setProductosTabla(filasTabla)
@@ -552,7 +535,6 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
   }, [filasTabla, setProductosTabla]);
 
   const agregarNuevoProducto = () => {
-    if (JSON.stringify(productoAAgregar).length <= 2) { console.log("No se ha seleccionado producto") }
     if (JSON.stringify(productoAAgregar).length>2) {
       setFilasTabla([...filasTabla, productoAAgregar]);
       //setProductos(productos.filter((v) => v._id !== productoAAgregar._id));//si se desea eliminar el producto del select
@@ -576,6 +558,32 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
       })
     );
   };
+
+  //funciona esta parte
+  document.querySelectorAll('.Total').forEach(function (totalf) {
+    if (totalf.classList.length > 0) {
+        //var letra = totalf.classList[1];
+        var suma = 0;
+        var valor = 0
+        //document.querySelectorAll('.Columna'' + letra).forEach(function (celda) {
+        document.querySelectorAll('.ColumnaE').forEach(function (celda) {
+            valor = parseFloat(celda.innerHTML);
+            suma += valor;
+        });
+        totalf.innerHTML = suma;
+    }
+   //fin funciona esta parte 
+});
+
+  useEffect(() => {
+    let total = 0;
+    filasTabla.forEach((f) => {
+      console.log("soy la fila " + JSON.stringify(f));
+      total = parseFloat(total) + parseFloat(f.precio);//f.total;
+    });
+    setTotalVenta(total);
+    console.log("total venta " + total)
+  }, [filasTabla]);
 
   return (
     <div>
@@ -637,6 +645,15 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
               />
             );
           })}
+          <tr>
+            <td hidden></td>
+            <td></td>
+            <td></td>
+            <td>TOTAL VENTA</td>
+            <td className="Total"></td>
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -646,7 +663,7 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
 const FilaProducto = ({ veh, index, eliminarProducto, modificarProducto }) => {
   const [producto, setProducto] = useState(veh);
   useEffect(() => {
-    console.log('Fila producto veh', producto);
+    //console.log('Fila producto veh', producto);
   }, [producto]);
   return (
     <tr>
@@ -667,13 +684,12 @@ const FilaProducto = ({ veh, index, eliminarProducto, modificarProducto }) => {
                 ...producto,
                 cantidad: e.target.value === '' ? 1 : e.target.value,
                 total: parseFloat(producto.precio) * parseFloat(e.target.value === '' ? 1 : e.target.value),
-                // venta: setTotalVenta(parseFloat(setTotalVenta)+parseFloat(total)),
               });
             }}
           />
         </label>
       </td>
-      <td>{parseFloat(producto.total ?? producto.precio)}</td>
+      <td className="ColumnaE">{parseFloat(producto.total ?? producto.precio)}</td>
       <td>
         <i
           onClick={() => eliminarProducto(producto)}

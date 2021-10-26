@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Collapse,
@@ -27,8 +26,8 @@ const NavbarNav = (props) => {
     isAuthenticated && (
       <div>
         <Navbar color="light" light expand="md" className="px-4">
-          <NavbarBrand className="navbarBrand" href="/admin/perfil">
-            <img width="80" className="px-1" src={logo} alt="" />{user.name.toUpperCase()}
+          <NavbarBrand className="navbarBrand" href="#">
+            <img width="80" className="px-1" src={logo} alt="" />{user.name}
           </NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
@@ -41,7 +40,7 @@ const NavbarNav = (props) => {
                 <DropdownMenu right>
                   <DropdownItem>
                     <Link className="text-decoration-none" to="/admin/perfil">Mi Perfil</Link>
-                  </DropdownItem>
+                  </DropdownItem> 
                   <DropdownItem>
                     Configuraciones
                   </DropdownItem>
