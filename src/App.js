@@ -13,6 +13,7 @@ function App() {
     clientId="H9EPzWHGPHx17ep2HtG3UseuIGDO9P4o"
     redirectUri={window.location.origin}
     //redirectUri={'http://localhost:3000/admin/ventas'}
+    //redirectUri={'https://front-proyecto-ventas-ciclo3.herokuapp.com/admin/ventas'}
     audience='https://ciclo3-misiontic2022.us.auth0.com/api/v2/'
     //audience="https://back-autho-proyecto-ventas.com"
     >
