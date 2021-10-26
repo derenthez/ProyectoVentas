@@ -1,6 +1,7 @@
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import React from 'react'
 import Login from 'pages/Login';
+import Logout from 'components/Logout';
 // import Admin from 'pages/admin/Admin';
 import Home from 'pages/Home';
 import { PublicLayout } from 'layouts/PublicLayout';
@@ -46,6 +47,9 @@ const RouterApp = () => {
                         <Switch>
                             <Route path='/login'>
                                 <Login/>
+                            </Route>
+                            <Route path='/components/logout'>
+                                <Logout/>
                             </Route>
                         </Switch>
                     </AuthLayout>
