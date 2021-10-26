@@ -233,7 +233,7 @@ const TablaVentas = ({ loading, listaVentas, setEjecutarConsultaVentas }) => {
 const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [totalVenta, SetTotalVenta]=useState(0); 
+  //const [totalVenta, SetTotalVenta]=useState(0); 
   const [infoNuevoVenta, setInfoNuevoVenta] = useState({
     _id: venta._id,
     tipo_documento: venta.cliente.tipo_documento,
@@ -394,8 +394,9 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
   );
 };
 
+
 //FORMULARIO VENTAS
-const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setProductos,productosTabla,setProductosTabla, listaVentas, setVentas }) => {
+const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setProductos, totalVenta, setTotalVenta,productosTabla,setProductosTabla, listaVentas, setVentas }) => {
   const curr = new Date();
   curr.setDate(curr.getDate() - 1);
   const fechaVenta = curr.toISOString().substr(0, 10);
@@ -410,6 +411,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
     const datosFormulario = {} ;//{};//ojo
     const listaProductos =[];
     var conte = 0;
+    var totalizando=0;
     fd.forEach((value, key) => {
       datosFormulario[key] = value;
       //console.log("el for"+key.includes("producto_"))
@@ -423,6 +425,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
 
         var file = {_id: ''+datosFormulario[key], producto: ''+lsto[0]["nombre"], precio_unitario: ''+lsto[0]["precio"], cantidad:''+datosFormulario["cantidad_"+conte]};
         listaProductos.push(file);
+        totalizando=totalizando+ (parseFloat(lsto[0]["precio"]) * parseFloat(datosFormulario["cantidad_"+conte]))
         conte = conte+1;
       }
     });
@@ -435,10 +438,10 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
         cliente: {
           "tipo_documento": datosFormulario.tipo_documento_cliente,
           "documento": datosFormulario.documento_cliente,
-          "nombre": datosFormulario.nombre_cliente,
+          "nombre": datosFormulario.nombre_cliente.toUpperCase(),
         },
         detalles_venta: listaProductos,
-        total_venta: datosFormulario.valor,
+        total_venta: totalizando,//datosFormulario.valor,
         estado:"",
       },
       (response) => {
@@ -495,18 +498,19 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
           setProductos={setProductos}
           setProductosTabla={setProductosTabla}
         />
-        <div className="col-md-3">
+        <div className="col-md-3" hidden>
           <label htmlFor="valor" className='form-label'>Valor Total Venta</label>
           <input
             className='form-control'
             type='number'
             name='valor'
             defaultValue={0}
+            value={totalVenta || 1}
             min={1}
             required
           />
         </div>
-        <div className="col-md-2">
+        <div className="col-md-3">
         <label htmlFor="submit" className='form-label'> &nbsp; </label>
         <button
           type='submit'
@@ -524,6 +528,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, vendedores, productos, setP
 const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
   const [productoAAgregar, setProductoAAgregar] = useState({});
   const [filasTabla, setFilasTabla] = useState([]);
+  const [totalVenta, setTotalVenta] = useState(0);
 
   useEffect(() => {
     // setProductosTabla(filasTabla)
@@ -554,6 +559,32 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
       })
     );
   };
+
+  //funciona esta parte
+  document.querySelectorAll('.Total').forEach(function (totalf) {
+    if (totalf.classList.length > 0) {
+        //var letra = totalf.classList[1];
+        var suma = 0;
+        var valor = 0
+        //document.querySelectorAll('.Columna'' + letra).forEach(function (celda) {
+        document.querySelectorAll('.ColumnaE').forEach(function (celda) {
+            valor = parseFloat(celda.innerHTML);
+            suma += valor;
+        });
+        totalf.innerHTML = suma;
+    }
+   //fin funciona esta parte 
+});
+
+  useEffect(() => {
+    let total = 0;
+    filasTabla.forEach((f) => {
+      console.log("soy la fila " + JSON.stringify(f));
+      total = parseFloat(total) + parseFloat(f.precio);//f.total;
+    });
+    setTotalVenta(total);
+    console.log("total venta " + total)
+  }, [filasTabla]);
 
   return (
     <div>
@@ -615,6 +646,15 @@ const TablaProductos = ({ productos, setProductos,setProductosTabla}) => {
               />
             );
           })}
+          <tr>
+            <td hidden></td>
+            <td></td>
+            <td></td>
+            <td>TOTAL VENTA</td>
+            <td className="Total"></td>
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -645,13 +685,12 @@ const FilaProducto = ({ veh, index, eliminarProducto, modificarProducto }) => {
                 ...producto,
                 cantidad: e.target.value === '' ? 1 : e.target.value,
                 total: parseFloat(producto.precio) * parseFloat(e.target.value === '' ? 1 : e.target.value),
-                // venta: setTotalVenta(parseFloat(setTotalVenta)+parseFloat(total)),
               });
             }}
           />
         </label>
       </td>
-      <td>{parseFloat(producto.total ?? producto.precio)}</td>
+      <td className="ColumnaE">{parseFloat(producto.total ?? producto.precio)}</td>
       <td>
         <i
           onClick={() => eliminarProducto(producto)}
