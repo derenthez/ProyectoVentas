@@ -2,7 +2,8 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config({ path: '../../../.env' });
 
-const backend = process.env.BACK_URL || "http://localhost:5000";
+//const backend = process.env.BACK_URL || "http://localhost:5000";
+const backend = "https://back-proyecto-venta-mintic.herokuapp.com/" || "http://localhost:5000";
 
 const getToken = () => {
   return `Bearer ${localStorage.getItem('token')}`;
