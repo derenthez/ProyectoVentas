@@ -11,32 +11,24 @@ import 'react-toastify/dist/ReactToastify.css';
 const Login = () => {
 
   const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
-  const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
-  const [usuarioInteno,setUsuarioInterno] = useState([]);
-
-  useEffect(() => {
-    const fetchUsuarioInterno = async () => {
-      await getUsersByUsuario(
-        ({userl},response) => {
-          console.log("Respuesta: ", response);
-          setUsuarioInterno(response.data);
-          setEjecutarConsulta=false;
-        },
-        (error) => {
-          console.error("Error: ", error);
-        }
-      );
-    };
-    if (ejecutarConsulta) {
-      fetchUsuarioInterno();
-    }
-  }, [ejecutarConsulta]);;
 
   return (
     <div className='divPadre'>
-      {loginWithRedirect()}
-      {JSON.stringify(user)}
+      {/* {loginWithRedirect()}
+      {console.log(JSON.stringify(user))}
+      {localStorage.setItem('userAuth', JSON.stringify(user))} */}
+
+      {!isAuthenticated ? (
+        loginWithRedirect()
+      ) :
+        (
+          //JSON.stringify(user)
+          localStorage.setItem('userAuth', JSON.stringify(user))
+      )
+      }
     </div>
+
+    
   )
 };
 

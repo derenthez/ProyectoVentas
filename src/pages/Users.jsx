@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
 import { Dialog} from '@material-ui/core';
-import { getUsers, createUser, updateUser, deleteUser } from 'utils/api/users';
+import { getUsers, getUsersByEmail, createUser, updateUser, deleteUser } from 'utils/api/users';
 import ReactLoading from 'react-loading';
 import 'react-toastify/dist/ReactToastify.css';
 import 'styles/modulo.css';
@@ -27,7 +27,6 @@ export const Users = () => {
       setLoading(true);
       await getUsers(
         (response) => {
-          console.log("Respuesta: ", response);
           setUsuarios(response.data);
           setEjecutarConsulta(false);
           setLoading(false);
@@ -38,7 +37,7 @@ export const Users = () => {
         }
       );
     };
-    console.log("consulta", ejecutarConsulta);
+
     if (ejecutarConsulta) {
       fetchUsuarios();
     }
@@ -68,7 +67,7 @@ export const Users = () => {
             <i className={iconModulo}></i> <span className="title py-3">{tituloModulo}</span>
           </h3>
           <div>
-            <button type="button" className="btn btn-primary btn-block"
+            <button type="button" disabled className="btn btn-primary btn-block"
               onClick={() => {
                 setMostrarTabla(!mostrarTabla);
               }} >
@@ -87,7 +86,6 @@ export const Users = () => {
                 listaUsuarios={usuarios}
                 setUsuarios={setUsuarios}
               />)
-
             }
             <ToastContainer position='bottom-center' autoClose={5000} />
           </div>
@@ -224,7 +222,6 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         estado: infoNuevoUsuario.estado,
       },
       (response) => {
-        console.log(response.data);
         toast.success('Usuario modificado con éxito');
         setEdit(false);
         setEjecutarConsulta(true);
@@ -240,7 +237,6 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     await deleteUser(
       usuario._id,
       (response) => {
-        console.log(response.data);
         toast.success('Usuario eliminado con éxito');
         setEjecutarConsulta(true);
       },
@@ -371,25 +367,43 @@ const FormularioCreacionUsuarios = ({ setMostrarTabla, listaUsuarios, setUsuario
     fd.forEach((value, key) => {
       nuevoUsuario[key] = value;
     });
-
-    await createUser(
-      {
-        nombre: nuevoUsuario.nombre.toUpperCase(),
-        apellido: nuevoUsuario.apellido.toUpperCase(),
-        email: nuevoUsuario.email.toLowerCase(),
-        rol: nuevoUsuario.rol,
-        estado: nuevoUsuario.estado,
-      },
+    var responseEmail = null;
+    await getUsersByEmail(
+      nuevoUsuario.email.toLowerCase(),
       (response) => {
-        console.log(response.data);
-        toast.success('Usuario agregado con éxito');
+        responseEmail = response.data;
+        //setUserData(response.data);
+        //setLoadingUserInformation(false);
       },
-      (error) => {
-        console.error(error);
-        toast.error('Error creando usuario');
+      (err) => {
+        console.log('Error ', err);
+        responseEmail = "Error";
+        //logout({ returnTo: 'http://localhost:3000' });
       }
     );
 
+    if (responseEmail === null) {
+      await createUser(
+        {
+          nombre: nuevoUsuario.nombre.toUpperCase(),
+          apellido: nuevoUsuario.apellido.toUpperCase(),
+          email: nuevoUsuario.email.toLowerCase(),
+          rol: nuevoUsuario.rol,
+          estado: nuevoUsuario.estado,
+        },
+        (response) => {
+          toast.success('Usuario agregado con éxito');
+        },
+        (error) => {
+          console.error(error);
+          toast.error('Error creando usuario');
+        }
+      );
+    }
+
+    if(responseEmail!=null && responseEmail!="Error") {
+      toast.error('Error creando usuario, el email ya se encuentra en uso');  
+    }
     setMostrarTabla(true);
   };
 

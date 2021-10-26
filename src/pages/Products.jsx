@@ -27,7 +27,6 @@ export const Products = () => {
       setLoading(true);
       await getProducts(
         (response) => {
-          console.log("Respuesta: ", response);
           setProductos(response.data);
           setEjecutarConsulta(false);
           setLoading(false);
@@ -38,7 +37,6 @@ export const Products = () => {
         }
       );
     };
-    console.log("consulta", ejecutarConsulta);
     if (ejecutarConsulta) {
       fetchProductos();
     }
@@ -220,7 +218,6 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
         estado: infoNuevoProducto.estado,
       },
       (response) => {
-        console.log(response.data);
         toast.success('Producto modificado con éxito');
         setEdit(false);
         setEjecutarConsulta(true);
@@ -236,7 +233,6 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
     await deleteProduct(
       producto._id,
       (response) => {
-        console.log(response.data);
         toast.success('Producto eliminado con éxito');
         setEjecutarConsulta(true);
       },
@@ -258,8 +254,8 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
             <input 
               className='form-control rounded-lg'
               type='text'
-              value={infoNuevoProducto.nombre.toUpperCase()}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, nombre: e.target.value.toUpperCase() })}
+              value={infoNuevoProducto.nombre}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, nombre: e.target.value })}
             />
           </td>
           <td>
@@ -361,7 +357,6 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
         estado: nuevoProducto.estado,
       },
       (response) => {
-        console.log(response.data);
         toast.success('Producto agregado con éxito');
       },
       (error) => {
