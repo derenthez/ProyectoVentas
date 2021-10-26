@@ -355,9 +355,9 @@ const FilaVenta = ({ venta, setEjecutarConsultaVentas }) => {
             </>
           ):(
             <>
-              <button type="button" className="btn btn-success buttonTable">
+              {/*<button type="button" className="btn btn-success buttonTable">
                 <i className="fa fa-eye"></i>
-              </button>
+          </button>*/}
               <button type="button" onClick={() => infoNuevoVenta.estado!="Entregada" && infoNuevoVenta.estado!="Cancelada" ? (setOpenDialog(true)):(toast.error("La venta no se puede eliminar"))} className="btn btn-danger buttonTableTrash">
                 <i className="fas fa-trash-alt"></i>
               </button>
